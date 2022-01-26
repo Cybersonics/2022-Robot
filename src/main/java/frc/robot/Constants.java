@@ -13,8 +13,8 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public final static String targetCamera = "";
-    public final static String ballCamera = "";
+    public final static String targetCamera = "mmal_service_16.1";
+    public final static String ballCamera = "Microsoft_LifeCam_HD-3000";
 
     public final static int BluePipeline = 0;
     public final static int RedPipeline = 1;
