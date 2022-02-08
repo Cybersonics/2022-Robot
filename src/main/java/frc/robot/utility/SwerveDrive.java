@@ -5,22 +5,21 @@
 package frc.robot.utility;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 
-public class SwerveDrive<D, S> {
+public class SwerveDrive {
 
     private DriveLocation driveLocation;
     private double wheelDiameter;
-    private D driveMotor;
-    private S steerMotor;
+    private CANSparkMax driveMotor;
+    private TalonSRX steerMotor;
     private Encoder encoder;
 	public double encoderCountPerRotation;
 
-    public SwerveDrive(SwerveDriveBuilder<D, S> builder) {
+    public SwerveDrive(SwerveDriveBuilder builder) {
         this.driveLocation = builder.driveLocation;
         this.wheelDiameter = builder.wheelDiameter;
         this.driveMotor = builder.driveMotor;
@@ -33,11 +32,11 @@ public class SwerveDrive<D, S> {
         return this.driveLocation;
     }
 
-    public D getDriveMotor() {
+    public CANSparkMax getDriveMotor() {
         return this.driveMotor;
     }
 
-    public S getSteerMotor() {
+    public TalonSRX getSteerMotor() {
         return this.steerMotor;
     }
 
@@ -82,41 +81,43 @@ public class SwerveDrive<D, S> {
     }
 
     private double getSteerSensorPosition() {
-        if(steerMotor instanceof CANSparkMax) {
-            return ((CANSparkMax)this.steerMotor).getEncoder().getPosition();
-        } else if (steerMotor instanceof TalonSRX) {
-            return ((TalonSRX)this.steerMotor).getSelectedSensorPosition(0);
-        } else {
-            throw new Error("MotorController Type not supported by code");
-        }
+        // if(steerMotor instanceof CANSparkMax) {
+        //     return ((CANSparkMax)this.steerMotor).getEncoder().getPosition();
+        // } else if (steerMotor instanceof TalonSRX) {
+            return this.steerMotor.getSelectedSensorPosition(0);
+        // } else {
+        //     throw new Error("MotorController Type not supported by code");
+        // }
     }
 
     private void setSteerMotorPosition(double position) {
-        if(steerMotor instanceof CANSparkMax) {
-            ((CANSparkMax)this.steerMotor).getEncoder().setPosition(position);
-        } else if (steerMotor instanceof TalonSRX) {
-            ((TalonSRX)this.steerMotor).set(ControlMode.Position, position);
-        } else {
-            throw new Error("MotorController Type not supported by code");
-        }
+        // if(steerMotor instanceof CANSparkMax) {
+        //     ((CANSparkMax)this.steerMotor).getEncoder().setPosition(position);
+        // } else if (steerMotor instanceof TalonSRX) {
+            this.steerMotor.set(ControlMode.Position, position);
+        //     ((TalonSRX)this.steerMotor).set(ControlMode.Position, position);
+        // } else {
+        //     throw new Error("MotorController Type not supported by code");
+        // }
     }
 
     private void setDriveMotorSpeed(double speed) {
-        if(steerMotor instanceof CANSparkMax) {
-            ((CANSparkMax)this.driveMotor).set(speed);
-        } else if (steerMotor instanceof TalonSRX) {
-            ((TalonSRX)this.driveMotor).set(ControlMode.PercentOutput, speed);
-        } else {
-            throw new Error("MotorController Type not supported by code");
-        }
+        // if(steerMotor instanceof CANSparkMax) {
+            // ((CANSparkMax)this.driveMotor).set(speed);
+            this.driveMotor.set(speed);
+        // } else if (steerMotor instanceof TalonSRX) {
+        //     ((TalonSRX)this.driveMotor).set(ControlMode.PercentOutput, speed);
+        // } else {
+        //     throw new Error("MotorController Type not supported by code");
+        // }
     }
 
-    public static class SwerveDriveBuilder<D, S> {
+    public static class SwerveDriveBuilder {
         private final DriveLocation driveLocation;
         private final double wheelDiameter;
         
-        private D driveMotor;
-        private S steerMotor;
+        private CANSparkMax driveMotor;
+        private TalonSRX steerMotor;
         private Encoder encoder;
         private double encoderCountPerRotation;
 
@@ -125,24 +126,24 @@ public class SwerveDrive<D, S> {
             this.wheelDiameter = wheelDiameter;
         }
 
-        public SwerveDriveBuilder<D, S> DriveMotor(D driveMotor) {
+        public SwerveDriveBuilder DriveMotor(CANSparkMax driveMotor) {
             this.driveMotor = driveMotor;
             return this;
         }
 
-        public SwerveDriveBuilder<D, S> Encoder(Encoder encoder, double encoderCountPerRotation) {
+        public SwerveDriveBuilder Encoder(Encoder encoder, double encoderCountPerRotation) {
             this.encoder = encoder;
             this.encoderCountPerRotation = encoderCountPerRotation;
             return this;
         }
 
-        public SwerveDriveBuilder<D, S> SteerMotor(S steerMotor) {
+        public SwerveDriveBuilder SteerMotor(TalonSRX steerMotor) {
             this.steerMotor = steerMotor;
             return this;
         }
 
-        public SwerveDrive<D, S> Build() {
-            SwerveDrive<D, S> drive = new SwerveDrive<D, S>(this);
+        public SwerveDrive Build() {
+            SwerveDrive drive = new SwerveDrive(this);
             return drive;
         }
     }

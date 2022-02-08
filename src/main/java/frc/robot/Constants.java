@@ -23,8 +23,13 @@ public final class Constants {
     public static final int FL_Steer_Id = 11;
     public static final int FR_Drive_Id = 2;
     public static final int FR_Steer_Id = 12;
-    public static final int BL_Drive_Id = 3;
-    public static final int BL_Steer_Id = 13;
-    public static final int BR_Drive_Id = 4;
-    public static final int BR_Steer_Id = 14;
+    public static final int BR_Drive_Id = 3;
+    public static final int BR_Steer_Id = 13;
+    public static final int BL_Drive_Id = 4;
+    public static final int BL_Steer_Id = 14;
+
+    public static final int XBOX_CONTROLLER = 2;
+
+    public static final double ROBOT_WIDTH = 28.0;
+    public static final double ROBOT_LENGTH = 30.0;
 }

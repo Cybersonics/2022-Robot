@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -25,13 +26,15 @@ public class Drive extends SubsystemBase {
   private final double robotWidth;
   private final double robotLength;
 
-  private SwerveDrive<CANSparkMax, TalonSRX> FL_Drive;
-  private SwerveDrive<CANSparkMax, TalonSRX> FR_Drive;
-  private SwerveDrive<CANSparkMax, TalonSRX> BL_Drive;
-  private SwerveDrive<CANSparkMax, TalonSRX> BR_Drive;
+  private SwerveDrive FL_Drive;
+  private SwerveDrive FR_Drive;
+  private SwerveDrive BL_Drive;
+  private SwerveDrive BR_Drive;
 
-  private static final double STEER_P = 10.0, STEER_I = 0.02, STEER_D = 0.0;
+  private static final double STEER_P = 0.1, STEER_I = 0.04, STEER_D = 0.0;
   private static final int STATUS_FRAME_PERIOD = 5;
+
+  private static final double ENCODER_COUNT = 1024.0;
 
   /**
    * Constructor to create class responsible for converting joystick interaction
@@ -44,28 +47,28 @@ public class Drive extends SubsystemBase {
     this.robotWidth = width;
     this.robotLength = length;
 
-    this.FL_Drive = new SwerveDrive.SwerveDriveBuilder<CANSparkMax, TalonSRX>(DriveLocation.FrontLeft, 4.0)
+    this.FL_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.FrontLeft, 4.0)
         .DriveMotor(buildDriveMotor(Constants.FL_Drive_Id))
         .SteerMotor(buildSteerMotor(Constants.FL_Steer_Id))
-        .Encoder(null, 1024.0)
+        .Encoder(null, ENCODER_COUNT)
         .Build();
 
-    this.FR_Drive = new SwerveDrive.SwerveDriveBuilder<CANSparkMax, TalonSRX>(DriveLocation.FrontRight, 4.0)
+    this.FR_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.FrontRight, 4.0)
         .DriveMotor(buildDriveMotor(Constants.FR_Drive_Id))
         .SteerMotor(buildSteerMotor(Constants.FR_Steer_Id))
-        .Encoder(null, 1024.0)
+        .Encoder(null, ENCODER_COUNT)
         .Build();
 
-    this.BL_Drive = new SwerveDrive.SwerveDriveBuilder<CANSparkMax, TalonSRX>(DriveLocation.BackLeft, 4.0)
+    this.BL_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.BackLeft, 4.0)
         .DriveMotor(buildDriveMotor(Constants.BL_Drive_Id))
         .SteerMotor(buildSteerMotor(Constants.BL_Steer_Id))
-        .Encoder(null, 1024.0)
+        .Encoder(null, ENCODER_COUNT)
         .Build();
 
-    this.BR_Drive = new SwerveDrive.SwerveDriveBuilder<CANSparkMax, TalonSRX>(DriveLocation.BackRight, 4.0)
+    this.BR_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.BackRight, 4.0)
         .DriveMotor(buildDriveMotor(Constants.BR_Drive_Id))
         .SteerMotor(buildSteerMotor(Constants.BR_Steer_Id))
-        .Encoder(null, 1024.0)
+        .Encoder(null, ENCODER_COUNT)
         .Build();
   }
 
@@ -95,7 +98,11 @@ public class Drive extends SubsystemBase {
     return steer;
   }
 
-  public void processInput(double forward, double strafe, double omega) {
+  public void processInput(DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier omegaSupplier) {
+    double forward = forwardSupplier.getAsDouble();
+    double strafe = strafeSupplier.getAsDouble();
+    double omega = omegaSupplier.getAsDouble();
+
     double omegaL2 = omega * (this.robotWidth / 2.0);
     double omegaW2 = omega * (this.robotLength / 2.0);
 
