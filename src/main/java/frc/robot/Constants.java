@@ -18,4 +18,17 @@ public final class Constants {
 
     public final static int BluePipeline = 0;
     public final static int RedPipeline = 1;
+
+    public final static int FL_Drive = 1;
+    public final static int FR_Drive = 2;
+    public final static int BL_Drive = 3;
+    public final static int BR_Drive = 4;
+
+    public final static int FL_Steer = 11;
+    public final static int FR_Steer = 12;
+    public final static int BL_Steer = 13;
+    public final static int BR_Steer = 14;
+
+    public final static int L_Launcher = 21;
+    public final static int R_Launcher = 22;
 }
