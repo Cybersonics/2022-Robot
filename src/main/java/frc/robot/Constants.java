@@ -19,6 +19,7 @@ public final class Constants {
     public final static int BluePipeline = 0;
     public final static int RedPipeline = 1;
 
+<<<<<<< HEAD
     public final static int FL_Drive = 1;
     public final static int FR_Drive = 2;
     public final static int BL_Drive = 3;
@@ -31,4 +32,19 @@ public final class Constants {
 
     public final static int L_Launcher = 21;
     public final static int R_Launcher = 22;
+=======
+    public static final int FL_Drive_Id = 1;
+    public static final int FL_Steer_Id = 11;
+    public static final int FR_Drive_Id = 2;
+    public static final int FR_Steer_Id = 12;
+    public static final int BR_Drive_Id = 3;
+    public static final int BR_Steer_Id = 13;
+    public static final int BL_Drive_Id = 4;
+    public static final int BL_Steer_Id = 14;
+
+    public static final int XBOX_CONTROLLER = 2;
+
+    public static final double ROBOT_WIDTH = 28.0;
+    public static final double ROBOT_LENGTH = 30.0;
+>>>>>>> c51b1c9fedb3abdd3a4a8314f243ae1f87e0432b
 }
