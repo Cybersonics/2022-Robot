@@ -23,6 +23,8 @@ import frc.robot.utility.SwerveDrive;
 
 public class Drive extends SubsystemBase {
 
+  private static Drive instance;
+
   private final double robotWidth;
   private final double robotLength;
 
@@ -43,7 +45,7 @@ public class Drive extends SubsystemBase {
    * @param width  width of the robot in inches
    * @param length length of the robot in inches
    */
-  public Drive(double width, double length) {
+  private Drive(double width, double length) {
     this.robotWidth = width;
     this.robotLength = length;
 
@@ -96,6 +98,14 @@ public class Drive extends SubsystemBase {
     steer.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, STATUS_FRAME_PERIOD, 0);
 
     return steer;
+  }
+  
+  // Public Methods
+  public static Drive getInstance(double width, double length) {
+    if (instance == null) {
+      instance = new Drive(width, length);
+    }
+    return instance;
   }
 
   public void processInput(DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier omegaSupplier) {

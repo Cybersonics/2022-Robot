@@ -1,14 +1,20 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.autonomous.AutonomousRoutines;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.NavXGyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -19,13 +25,29 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  //Subsystems
+  public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
+  public static Climber _climber = Climber.getInstance();
+  public static Indexer _indexer = Indexer.getInstance();
+  public static Intake _intake = Intake.getInstance();
+  public static Launcher _launcher = Launcher.getInstance();
+  public static NavXGyro _gyro = NavXGyro.getInstance();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand();
+  //Commands
 
-  public static Drive _drive = new Drive(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
+  // Controllers
   public XboxController driveController;
+
+  // A chooser for autonomous commands
+  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines();
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
   
-  public RobotContainer() {
+  public RobotContainer() {    
+    // Set up auton selector
+    m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
+
+    // Put the chooser on the dashboard
+    SmartDashboard.putData(m_chooser);
     // Configure the button bindings
     configureButtonBindings();
     
@@ -52,6 +74,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return m_chooser.getSelected();
   }
 }
