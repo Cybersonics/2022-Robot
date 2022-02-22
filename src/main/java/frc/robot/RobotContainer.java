@@ -15,8 +15,10 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.NavXGyro;
+import frc.robot.subsystems.Pneumatics;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,6 +34,7 @@ public class RobotContainer {
   public static Intake _intake = Intake.getInstance();
   public static Launcher _launcher = Launcher.getInstance();
   public static NavXGyro _gyro = NavXGyro.getInstance();
+  public static Pneumatics _Pneumatics = Pneumatics.getInstance();
 
   //Commands
 
@@ -53,10 +56,10 @@ public class RobotContainer {
     
     driveController = new XboxController(Constants.XBOX_CONTROLLER);
 
-    CommandScheduler.getInstance()
-    .setDefaultCommand(_drive, 
-      new DriveCommand(_drive, driveController)
-    );
+    // CommandScheduler.getInstance()
+    // .setDefaultCommand(_drive, 
+    //   new DriveCommand(_drive, driveController)
+    // );
   }
 
   /**
@@ -65,7 +68,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    
+
+        // Set A button
+        new JoystickButton(driveController, 1).whenPressed(() -> _Pneumatics.intakeOut());
+        // Set B button
+        new JoystickButton(driveController, 2).whenPressed(() -> _Pneumatics.intakeIn());
+
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

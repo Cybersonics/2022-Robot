@@ -25,6 +25,7 @@ public final class Constants {
 
     public final static int L_Launcher = 21;
     public final static int R_Launcher = 22;
+    public final static int Turret = 30;
 
     public static final int FL_Drive_Id = 1;
     public static final int FL_Steer_Id = 11;
@@ -42,15 +43,16 @@ public final class Constants {
 
     public static final int INDEXER_ID = 23;
     public static final int INTAKER_ID = 24;
-    public static final int CLIMBER_ID = 25;
+    public static final int R_CLIMBER_ID = 41;
+    public static final int L_CLIMBER_ID = 42;
 
-    public static final int L_INTAKE_OUT = 1;
-    public static final int L_INTAKE_IN = 2;
-    public static final int R_INTAKE_OUT = 3;
-    public static final int R_INTAKE_IN = 4;
+    public static final int L_INTAKE_OUT = 0;
+    public static final int L_INTAKE_IN = 1;
+    public static final int R_INTAKE_OUT = 6;
+    public static final int R_INTAKE_IN = 7;
 
-    public static final int L_CLIMBER_OUT = 5;
-    public static final int L_CLIMBER_IN = 6;
-    public static final int R_CLIMBER_OUT = 7;
-    public static final int R_CLIMBER_IN = 8;
+    public static final int L_CLIMBER_OUT = 2;
+    public static final int L_CLIMBER_IN = 3;
+    public static final int R_CLIMBER_OUT = 4;
+    public static final int R_CLIMBER_IN = 5;
 }
