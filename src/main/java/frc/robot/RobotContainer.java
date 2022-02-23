@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.IndexerCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.autonomous.AutonomousRoutines;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
@@ -21,13 +23,16 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  //Subsystems
+  // Subsystems
   public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
   public static Climber _climber = Climber.getInstance();
   public static Indexer _indexer = Indexer.getInstance();
@@ -36,7 +41,7 @@ public class RobotContainer {
   public static NavXGyro _gyro = NavXGyro.getInstance();
   public static Pneumatics _Pneumatics = Pneumatics.getInstance();
 
-  //Commands
+  // Commands
 
   // Controllers
   public XboxController driveController;
@@ -44,37 +49,51 @@ public class RobotContainer {
   // A chooser for autonomous commands
   private final AutonomousRoutines _autonRoutines = new AutonomousRoutines();
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-  
-  public RobotContainer() {    
+
+  public RobotContainer() {
     // Set up auton selector
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);
-    // Configure the button bindings
-    configureButtonBindings();
-    
+
     driveController = new XboxController(Constants.XBOX_CONTROLLER);
 
     // CommandScheduler.getInstance()
-    // .setDefaultCommand(_drive, 
-    //   new DriveCommand(_drive, driveController)
+    // .setDefaultCommand(_drive,
+    // new DriveCommand(_drive, driveController)
     // );
+
+    // Configure the button bindings
+    configureButtonBindings();
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    
 
-        // Set A button
-        new JoystickButton(driveController, 1).whenPressed(() -> _Pneumatics.intakeOut());
-        // Set B button
-        new JoystickButton(driveController, 2).whenPressed(() -> _Pneumatics.intakeIn());
+    //Left xbox joystick Y(up/down)
+    _indexer.setDefaultCommand(new IndexerCommand(
+        _indexer, driveController));
+
+    // Right xbox joystick Y(up/down)
+    _intake.setDefaultCommand(new IntakeCommand(
+        _intake, driveController));
+
+    // Set A button
+    new JoystickButton(driveController, 1).whenPressed(() -> _Pneumatics.intakeOut());
+    // Set B button
+    new JoystickButton(driveController, 2).whenPressed(() -> _Pneumatics.intakeIn());
+    // Set X button
+    new JoystickButton(driveController, 3).whenPressed(() -> _Pneumatics.climberDown());
+    // Set Y button
+    new JoystickButton(driveController, 4).whenPressed(() -> _Pneumatics.climberUp());
 
   }
 

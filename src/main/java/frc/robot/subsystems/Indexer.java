@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -33,6 +35,11 @@ public class Indexer extends SubsystemBase {
       instance = new Indexer();
     }
     return instance;
+  }
+
+  public void manualControl(DoubleSupplier supplierSpeed) {
+    var speed = supplierSpeed.getAsDouble();
+    _indexMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void manualControl(double speed) {

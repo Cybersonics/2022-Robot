@@ -26,11 +26,11 @@ public class Pneumatics extends SubsystemBase {
   private Pneumatics() {
     pcmCompressor.enableDigital();
     
-    _intakeLeft.set(Value.kOff);
-    _intakeRight.set(Value.kOff);
+    _intakeLeft.set(Value.kForward);
+    _intakeRight.set(Value.kForward);
 
-    _climberLeft.set(Value.kOff);
-    _climberRight.set(Value.kOff);
+    _climberLeft.set(Value.kForward);
+    _climberRight.set(Value.kForward);
   }
 
   public static Pneumatics getInstance() {
@@ -40,39 +40,23 @@ public class Pneumatics extends SubsystemBase {
     return instance;
   }
 
-  public void intakeOut() {
-    if (_intakeLeft.get() == Value.kOff || _intakeLeft.get() == Value.kForward) {
-      _intakeLeft.toggle(); 
-    }
-    if (_intakeRight.get() == Value.kOff || _intakeRight.get() == Value.kForward) {
-      _intakeRight.toggle();
-    }
+  public void intakeIn() {
+      _intakeLeft.set(Value.kForward); 
+      _intakeRight.set(Value.kForward);
   }
 
-  public void intakeIn() {
-    if (_intakeLeft.get() == Value.kOff || _intakeLeft.get() == Value.kReverse) {
-      _intakeLeft.toggle(); 
-    }
-    if (_intakeRight.get() == Value.kOff || _intakeRight.get() == Value.kReverse) {
-      _intakeRight.toggle();
-    }
+  public void intakeOut() {
+      _intakeLeft.set(Value.kReverse); 
+      _intakeRight.set(Value.kReverse);
   }
 
   public void climberUp() {
-    if (_intakeLeft.get() == Value.kOff || _intakeLeft.get() == Value.kReverse) {
-      _intakeLeft.toggle(); 
-    }
-    if (_intakeRight.get() == Value.kOff || _intakeRight.get() == Value.kReverse) {
-      _intakeRight.toggle();
-    }
+    _climberLeft.set(Value.kForward);
+    _climberRight.set(Value.kForward);
   }
 
   public void climberDown() {
-    if (_climberLeft.get() == Value.kOff || _climberLeft.get() == Value.kReverse) {
-      _climberLeft.toggle(); 
-    }
-    if (_climberRight.get() == Value.kOff || _climberRight.get() == Value.kReverse) {
-      _climberRight.toggle();
-    }
+      _climberLeft.set(Value.kReverse);
+      _climberRight.set(Value.kReverse);
   }
 }
