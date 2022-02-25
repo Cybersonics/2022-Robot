@@ -74,6 +74,13 @@ public class Drive extends SubsystemBase {
         .Build();
   }
 
+  public void resetDriveEncoders() {
+    this.FL_Drive.resetDriveEncoders();
+    this.FR_Drive.resetDriveEncoders();
+    this.BL_Drive.resetDriveEncoders();
+    this.BR_Drive.resetDriveEncoders();
+  }
+
   private CANSparkMax buildDriveMotor(int driveId) {
     var drive = new CANSparkMax(driveId, MotorType.kBrushless);
     drive.restoreFactoryDefaults();
@@ -155,5 +162,13 @@ public class Drive extends SubsystemBase {
 
   private double angle(double val1, double val2) {
     return Math.toDegrees(Math.atan2(val1, val2));
+  }
+
+  @Override()
+  public void periodic() {
+    this.FL_Drive.outputToDashboard();
+    this.FR_Drive.outputToDashboard();
+    this.BR_Drive.outputToDashboard();
+    this.BL_Drive.outputToDashboard();
   }
 }

@@ -25,6 +25,7 @@ public class Pneumatics extends SubsystemBase {
   /** Creates a new Pnuematics. */
   private Pneumatics() {
     pcmCompressor.enableDigital();
+    //pcmCompressor.disable();
     
     _intakeLeft.set(Value.kForward);
     _intakeRight.set(Value.kForward);

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.TurretCommand;
 import frc.robot.commands.autonomous.AutonomousRoutines;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,9 +41,8 @@ public class RobotContainer {
   public static Intake _intake = Intake.getInstance();
   public static Launcher _launcher = Launcher.getInstance();
   public static NavXGyro _gyro = NavXGyro.getInstance();
-  public static Pneumatics _Pneumatics = Pneumatics.getInstance();
-
-  // Commands
+  public static Pneumatics _pneumatics = Pneumatics.getInstance();
+  public static Turret _turret = Turret.getInstance();
 
   // Controllers
   public XboxController driveController;
@@ -79,21 +80,32 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //Left xbox joystick Y(up/down)
-    _indexer.setDefaultCommand(new IndexerCommand(
-        _indexer, driveController));
+    //_indexer.setDefaultCommand(new IndexerCommand(_indexer, driveController));
 
     // Right xbox joystick Y(up/down)
-    _intake.setDefaultCommand(new IntakeCommand(
-        _intake, driveController));
+    //_intake.setDefaultCommand(new IntakeCommand(_intake, driveController));
+
+    // Right xbox joystick X(left/right)
+    _turret.setDefaultCommand(new TurretCommand(_turret, driveController));
+
+    // Set LB button 
+    new JoystickButton(driveController, 6).whenPressed(() -> _launcher.start());
+    new JoystickButton(driveController, 6).whenReleased(() -> _launcher.stop());
 
     // Set A button
-    new JoystickButton(driveController, 1).whenPressed(() -> _Pneumatics.intakeOut());
+    //new JoystickButton(driveController, 1).whenPressed(() -> _Pneumatics.intakeOut());
     // Set B button
-    new JoystickButton(driveController, 2).whenPressed(() -> _Pneumatics.intakeIn());
+    //new JoystickButton(driveController, 2).whenPressed(() -> _Pneumatics.intakeIn());
     // Set X button
-    new JoystickButton(driveController, 3).whenPressed(() -> _Pneumatics.climberDown());
+    new JoystickButton(driveController, 3).whenPressed(() -> _pneumatics.climberDown());
     // Set Y button
-    new JoystickButton(driveController, 4).whenPressed(() -> _Pneumatics.climberUp());
+    new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberUp());
+   // Set B button
+    new JoystickButton(driveController, 2).whenPressed(() -> _climber.releaseClimber());
+    new JoystickButton(driveController, 2).whenReleased(() -> _climber.stop());
+    // Set A button
+    new JoystickButton(driveController, 1).whenPressed(() -> _climber.retractClimber());
+    new JoystickButton(driveController, 1).whenReleased(() -> _climber.stop());
 
   }
 

@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -8,8 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Launcher extends SubsystemBase {
-  private final double MAX_SHOOTER_RATE = 1.0;
-  public double PivotRate = 0.5;
+  private final double MAX_SHOOTER_RATE = .7;
   public CANSparkMax _leftMotor;
   public CANSparkMax _rightMotor;
   private static Launcher instance;
@@ -45,12 +47,13 @@ public class Launcher extends SubsystemBase {
   private void setupRightMotor() {
     _rightMotor = new CANSparkMax(Constants.R_Launcher, MotorType.kBrushless);
     _rightMotor.restoreFactoryDefaults();
+    _rightMotor.setIdleMode(IdleMode.kCoast);
   }
 
   private void setupLeftMotor() {
     _leftMotor = new CANSparkMax(Constants.L_Launcher, MotorType.kBrushless);
     _leftMotor.restoreFactoryDefaults();
+    _leftMotor.setIdleMode(IdleMode.kCoast);
     _leftMotor.setInverted(true);
   }
-
 }

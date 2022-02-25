@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
 
@@ -46,6 +47,14 @@ public class SwerveDrive {
 
     public Encoder getEncoder() {
         return this.encoder;
+    }
+
+    public void resetDriveEncoders() {
+        this.driveMotor.getEncoder().setPosition(0);
+    }
+
+    public void outputToDashboard() {
+        SmartDashboard.putNumber(this.driveLocation.getName(), this.getSteerSensorPosition());
     }
 
     public void setAngleAndSpeed(double angle, double speed) {
