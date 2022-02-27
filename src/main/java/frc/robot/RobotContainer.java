@@ -4,6 +4,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,6 +46,7 @@ public class RobotContainer {
   public static Turret _turret = Turret.getInstance();
 
   // Controllers
+  public XboxController opController;
   public XboxController driveController;
 
   // A chooser for autonomous commands
@@ -58,12 +60,13 @@ public class RobotContainer {
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);
 
-    driveController = new XboxController(Constants.XBOX_CONTROLLER);
+    opController = new XboxController(Constants.OP_CONTROLLER);
+    driveController = new XboxController(Constants.DRIVE_CONTROLLER);
 
-    // CommandScheduler.getInstance()
-    // .setDefaultCommand(_drive,
-    // new DriveCommand(_drive, driveController)
-    // );
+    CommandScheduler.getInstance()
+    .setDefaultCommand(_drive,
+    new DriveCommand(_drive, driveController)
+    );
 
     // Configure the button bindings
     configureButtonBindings();
@@ -80,26 +83,27 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //Left xbox joystick Y(up/down)
-    //_indexer.setDefaultCommand(new IndexerCommand(_indexer, driveController));
+    _indexer.setDefaultCommand(new IndexerCommand(_indexer, opController));
 
     // Right xbox joystick Y(up/down)
-    //_intake.setDefaultCommand(new IntakeCommand(_intake, driveController));
+    _intake.setDefaultCommand(new IntakeCommand(_intake, opController));
 
     // Right xbox joystick X(left/right)
-    _turret.setDefaultCommand(new TurretCommand(_turret, driveController));
+    _turret.setDefaultCommand(new TurretCommand(_turret, opController));
 
     // Set LB button 
-    new JoystickButton(driveController, 6).whenPressed(() -> _launcher.start());
-    new JoystickButton(driveController, 6).whenReleased(() -> _launcher.stop());
+    new JoystickButton(opController, 6).whenPressed(() -> _launcher.start());
+    new JoystickButton(opController, 6).whenReleased(() -> _launcher.stop());
 
     // Set A button
-    //new JoystickButton(driveController, 1).whenPressed(() -> _Pneumatics.intakeOut());
-    // Set B button
-    //new JoystickButton(driveController, 2).whenPressed(() -> _Pneumatics.intakeIn());
-    // Set X button
-    new JoystickButton(driveController, 3).whenPressed(() -> _pneumatics.climberDown());
+    new JoystickButton(opController, 1).whenPressed(() -> _pneumatics.intakeToggle());
+    // set X Button
+    new JoystickButton(opController, 3).whenPressed(() -> _turret.lowerTurret());
+    // Set Y Button
+    new JoystickButton(opController, 4).whenPressed(() -> _turret.raiseTurret());
+    
     // Set Y button
-    new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberUp());
+    new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberToggle());
    // Set B button
     new JoystickButton(driveController, 2).whenPressed(() -> _climber.releaseClimber());
     new JoystickButton(driveController, 2).whenReleased(() -> _climber.stop());

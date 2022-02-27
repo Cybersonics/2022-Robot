@@ -24,8 +24,8 @@ public class Pneumatics extends SubsystemBase {
 
   /** Creates a new Pnuematics. */
   private Pneumatics() {
-    pcmCompressor.enableDigital();
-    //pcmCompressor.disable();
+    //pcmCompressor.enableDigital();
+    pcmCompressor.disable();
     
     _intakeLeft.set(Value.kForward);
     _intakeRight.set(Value.kForward);
@@ -41,23 +41,13 @@ public class Pneumatics extends SubsystemBase {
     return instance;
   }
 
-  public void intakeIn() {
-      _intakeLeft.set(Value.kForward); 
-      _intakeRight.set(Value.kForward);
+  public void intakeToggle() {
+      _intakeLeft.toggle(); 
+      _intakeRight.toggle();
   }
 
-  public void intakeOut() {
-      _intakeLeft.set(Value.kReverse); 
-      _intakeRight.set(Value.kReverse);
-  }
-
-  public void climberUp() {
-    _climberLeft.set(Value.kForward);
-    _climberRight.set(Value.kForward);
-  }
-
-  public void climberDown() {
-      _climberLeft.set(Value.kReverse);
-      _climberRight.set(Value.kReverse);
+  public void climberToggle() {
+    _climberLeft.toggle();
+    _climberRight.toggle();
   }
 }

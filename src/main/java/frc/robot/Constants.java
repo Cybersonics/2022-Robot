@@ -36,7 +36,8 @@ public final class Constants {
     public static final int BL_Drive_Id = 4;
     public static final int BL_Steer_Id = 14;
 
-    public static final int XBOX_CONTROLLER = 2;
+    public static final int DRIVE_CONTROLLER = 1;
+    public static final int OP_CONTROLLER = 2;
 
     public static final double ROBOT_WIDTH = 28.0;
     public static final double ROBOT_LENGTH = 30.0;
