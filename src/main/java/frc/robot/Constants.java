@@ -56,4 +56,9 @@ public final class Constants {
     public static final int L_CLIMBER_IN = 3;
     public static final int R_CLIMBER_OUT = 4;
     public static final int R_CLIMBER_IN = 5;
+
+    public final static int FL_STEER_OFFSET=0;
+    public final static int BL_STEER_OFFSET=0;
+    public final static int FR_STEER_OFFSET=0;
+    public final static int BR_STEER_OFFSET=0;
 }

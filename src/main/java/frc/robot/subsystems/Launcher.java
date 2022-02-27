@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Launcher extends SubsystemBase {
-  private final double MAX_SHOOTER_RATE = .7;
+  private final double MAX_SHOOTER_RATE = 0.85;
   public CANSparkMax _leftMotor;
   public CANSparkMax _rightMotor;
   private static Launcher instance;

@@ -51,13 +51,15 @@ public class Climber extends SubsystemBase {
   private void setupLeftMotor() {
     _rightMotor = new CANSparkMax(Constants.L_CLIMBER_ID, MotorType.kBrushless);
     _rightMotor.restoreFactoryDefaults();
-    _rightMotor.setIdleMode(IdleMode.kCoast);
+    //_rightMotor.setIdleMode(IdleMode.kCoast);
+    _rightMotor.setIdleMode(IdleMode.kBrake);
   }
 
   private void setupRightMotor() {
     _leftMotor = new CANSparkMax(Constants.R_CLIMBER_ID, MotorType.kBrushless);
     _leftMotor.restoreFactoryDefaults();
-    _leftMotor.setIdleMode(IdleMode.kCoast);
+    //_leftMotor.setIdleMode(IdleMode.kCoast);
+    _leftMotor.setIdleMode(IdleMode.kBrake);
     _leftMotor.setInverted(true);
   }
 }

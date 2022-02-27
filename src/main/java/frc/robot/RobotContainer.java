@@ -36,7 +36,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // Subsystems
-  public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
+  //public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
+  public static Drive _drive = Drive.getInstance();
   public static Climber _climber = Climber.getInstance();
   public static Indexer _indexer = Indexer.getInstance();
   public static Intake _intake = Intake.getInstance();
@@ -65,7 +66,7 @@ public class RobotContainer {
 
     CommandScheduler.getInstance()
     .setDefaultCommand(_drive,
-    new DriveCommand(_drive, driveController)
+    new DriveCommand(_drive, driveController, _gyro)
     );
 
     // Configure the button bindings
@@ -90,6 +91,10 @@ public class RobotContainer {
 
     // Right xbox joystick X(left/right)
     _turret.setDefaultCommand(new TurretCommand(_turret, opController));
+
+    //Reset NavX
+    //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
+    new JoystickButton(driveController, 3).whenPressed(() -> _gyro.zeroNavHeading());
 
     // Set LB button 
     new JoystickButton(opController, 6).whenPressed(() -> _launcher.start());
