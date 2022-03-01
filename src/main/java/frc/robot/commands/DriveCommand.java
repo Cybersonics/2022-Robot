@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
@@ -14,6 +15,8 @@ public class DriveCommand extends CommandBase {
 
   private Drive _drive;
   private XboxController driveController;
+  private Joystick leftStick;
+  private Joystick rightStick;
   private NavXGyro _navXGyro;
 
   public static final double OMEGA_SCALE = 1.0 / 45.0;//30
@@ -34,6 +37,16 @@ public class DriveCommand extends CommandBase {
     addRequirements(drive);
   }
 
+  public DriveCommand(Drive drive, Joystick leftStick, Joystick rightStick, NavXGyro gyro) {
+    this._drive = drive;
+    this.leftStick = leftStick;
+    this.rightStick = rightStick;
+    this._navXGyro = gyro;
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drive);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -47,11 +60,14 @@ public class DriveCommand extends CommandBase {
     final double originOffset = 360 - originHeading;
 		//originCorr = _navXGyro.getNavAngle() + originOffset;
 
-    double stickForward = this.driveController.getLeftY();
+    // double stickForward = this.driveController.getLeftY();
+    double stickForward = this.leftStick.getY();
     SmartDashboard.putNumber("Controller Forward", stickForward);
-    double stickStrafe = this.driveController.getLeftX();
+    // double stickStrafe = this.driveController.getLeftX();
+    double stickStrafe = this.leftStick.getX();
     SmartDashboard.putNumber("Controller Strafe", stickStrafe);
-    double stickOmega = (this.driveController.getRightX());
+    // double stickOmega = (this.driveController.getRightX());
+    double stickOmega = this.rightStick.getX();
     SmartDashboard.putNumber("Controller Omega", stickOmega);
 
 		double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(-stickStrafe);
@@ -64,8 +80,9 @@ public class DriveCommand extends CommandBase {
       forward = 0.0;
     if (Math.abs(omega) < DEADZONE_RSTICK * OMEGA_SCALE)
       omega = 0.0;
-    
-    //if (!stickFieldCentric) {
+    boolean stickFieldCentric = leftStick.getTrigger();
+
+    if (!stickFieldCentric) {
         // When the Left Joystick trigger is not pressed, The robot is in Field Centric
         // Mode.
         // The calculations correct the forward and strafe values for field centric
@@ -80,7 +97,7 @@ public class DriveCommand extends CommandBase {
       final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
       strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
       forward = temp;
-    //}
+    }
   
     // If all of the joysticks are in the deadzone, don't update the motors
     // This makes side-to-side strafing much smoother

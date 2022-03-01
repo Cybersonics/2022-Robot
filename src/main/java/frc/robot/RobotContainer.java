@@ -49,6 +49,8 @@ public class RobotContainer {
   // Controllers
   public XboxController opController;
   public XboxController driveController;
+  public Joystick leftStick;
+  public Joystick rightStick;
 
   // A chooser for autonomous commands
   private final AutonomousRoutines _autonRoutines = new AutonomousRoutines();
@@ -62,11 +64,15 @@ public class RobotContainer {
     SmartDashboard.putData(m_chooser);
 
     opController = new XboxController(Constants.OP_CONTROLLER);
-    driveController = new XboxController(Constants.DRIVE_CONTROLLER);
+    //driveController = new XboxController(Constants.DRIVE_CONTROLLER);
+    leftStick = new Joystick(Constants.LEFT_STICK);
+    rightStick = new Joystick(Constants.RIGHT_STICK);
 
     CommandScheduler.getInstance()
+    // .setDefaultCommand(_drive,
+    // new DriveCommand(_drive, driveController, _gyro)
     .setDefaultCommand(_drive,
-    new DriveCommand(_drive, driveController, _gyro)
+    new DriveCommand(_drive, leftStick, rightStick, _gyro)
     );
 
     // Configure the button bindings
@@ -94,7 +100,8 @@ public class RobotContainer {
 
     //Reset NavX
     //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
-    new JoystickButton(driveController, 3).whenPressed(() -> _gyro.zeroNavHeading());
+    // new JoystickButton(driveController, 3).whenPressed(() -> _gyro.zeroNavHeading());
+    new JoystickButton(leftStick, 7).whenPressed(() -> _gyro.zeroNavHeading());
 
     // Set LB button 
     new JoystickButton(opController, 6).whenPressed(() -> _launcher.start());
@@ -108,13 +115,19 @@ public class RobotContainer {
     new JoystickButton(opController, 4).whenPressed(() -> _turret.raiseTurret());
     
     // Set Y button
-    new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberToggle());
+    // new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberToggle());
+    new JoystickButton(rightStick, 3).whenPressed(() -> _pneumatics.climberToggle());
    // Set B button
-    new JoystickButton(driveController, 2).whenPressed(() -> _climber.releaseClimber());
-    new JoystickButton(driveController, 2).whenReleased(() -> _climber.stop());
+    // new JoystickButton(driveController, 2).whenPressed(() -> _climber.releaseClimber());
+    // new JoystickButton(driveController, 2).whenReleased(() -> _climber.stop());
+    new JoystickButton(rightStick, 4).whenPressed(() -> _climber.releaseClimber());
+    new JoystickButton(rightStick, 4).whenReleased(() -> _climber.stop());
     // Set A button
-    new JoystickButton(driveController, 1).whenPressed(() -> _climber.retractClimber());
-    new JoystickButton(driveController, 1).whenReleased(() -> _climber.stop());
+    // new JoystickButton(driveController, 1).whenPressed(() -> _climber.retractClimber());
+    // new JoystickButton(driveController, 1).whenReleased(() -> _climber.stop());
+    new JoystickButton(rightStick, 5).whenPressed(() -> _climber.retractClimber());
+    new JoystickButton(rightStick, 5).whenReleased(() -> _climber.stop());
+
 
   }
 

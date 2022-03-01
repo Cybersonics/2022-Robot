@@ -36,6 +36,8 @@ public final class Constants {
     public static final int BL_Drive_Id = 4;
     public static final int BL_Steer_Id = 14;
 
+    public static final int LEFT_STICK = 0;
+    public static final int RIGHT_STICK = 1;
     public static final int DRIVE_CONTROLLER = 1;
     public static final int OP_CONTROLLER = 2;
 
