@@ -7,9 +7,11 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -24,12 +26,12 @@ public class Turret extends SubsystemBase {
   private Servo leftHoodServo;
   private Servo rightHoodServo;
 
+  //#region Servo Setup
   public static final double WPILIB_MIN_SERVO_ANGLE = 0.0; //degrees
   public static final double WPILIB_MAX_SERVO_ANGLE = 360.0; //degrees
   private static final double TIME_TO_SERVO_FULL_EXTENSION = 3.48; //Avg time to move from retract to extend
   private static final double PERCENT_PER_SECOND = 1.00 / TIME_TO_SERVO_FULL_EXTENSION;
-  private static final double DEGREES_PER_SECOND = (WPILIB_MAX_SERVO_ANGLE - WPILIB_MIN_SERVO_ANGLE)
-      * PERCENT_PER_SECOND;
+  private static final double DEGREES_PER_SECOND = (WPILIB_MAX_SERVO_ANGLE - WPILIB_MIN_SERVO_ANGLE) * PERCENT_PER_SECOND;
   private static final double HOOD_MAX_POSITION = 1.0; // percent servo travel to max hood position
   private static final double HOOD_MIN_POSITION = 0.0; // percent servo travel to min hood position
 
@@ -44,7 +46,15 @@ public class Turret extends SubsystemBase {
   // pwm values in ms for the max and min angles of the shooter hood
   private static final double HOOD_MAX_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MAX_POSITION);
   private static final double HOOD_MIN_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MIN_POSITION);
-  
+  //#endregion
+
+  //#region Turret Rotation PIDControl
+
+  final double ANGULAR_P = 0.1;
+  final double ANGULAR_D = 0.0;
+  PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+
+  //#endregion
   /** Creates a new Turret. */
   private Turret() {    
     CommandScheduler.getInstance().registerSubsystem(this);
@@ -77,6 +87,11 @@ public class Turret extends SubsystemBase {
   public void rotateTurret(DoubleSupplier speedSupplier) {
     double speed = speedSupplier.getAsDouble();
     _turretMotor.set(speed*.75);
+  } 
+
+  public void setPosition(double yaw) {
+    double rotationSpeed = -this.turnController.calculate(yaw, 0);
+    this._turretMotor.getPIDController().setReference(rotationSpeed, ControlType.kPosition);
   }
   
   private void setupTurretMotor() {
@@ -84,7 +99,6 @@ public class Turret extends SubsystemBase {
     _turretMotor.restoreFactoryDefaults();
     _turretMotor.setIdleMode(IdleMode.kBrake);
   }
-
   
   @Override
   public void periodic() {

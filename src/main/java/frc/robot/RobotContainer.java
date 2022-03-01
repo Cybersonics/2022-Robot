@@ -21,6 +21,7 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.vision.TargetVision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -45,6 +46,7 @@ public class RobotContainer {
   public static NavXGyro _gyro = NavXGyro.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
+  public static TargetVision _targetVision = TargetVision.getInstance();
 
   // Controllers
   public XboxController opController;
@@ -96,7 +98,7 @@ public class RobotContainer {
     _intake.setDefaultCommand(new IntakeCommand(_intake, opController));
 
     // Right xbox joystick X(left/right)
-    _turret.setDefaultCommand(new TurretCommand(_turret, opController));
+    _turret.setDefaultCommand(new TurretCommand(_turret, _targetVision, opController));
 
     //Reset NavX
     //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
