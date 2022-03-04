@@ -336,6 +336,43 @@ public class Drive extends SubsystemBase {
     return Math.toDegrees(Math.atan2(val1, val2));
   }
 
+  public double[] getDriveEncoders() {
+		double[] values = new double[] {
+			frontLeft.getDriveEncoder(),
+			backLeft.getDriveEncoder(),
+			frontRight.getDriveEncoder(),
+			backRight.getDriveEncoder()
+		};
+
+		return values;
+	}
+	
+	public double getDriveEncoderAvg() {
+		// double driveFL = frontLeft.getDriveEncoder();
+		// double driveBL = backLeft.getDriveEncoder();
+		// double driveFR = frontRight.getDriveEncoder();
+		// double driveBR = backRight.getDriveEncoder();
+		double driveFL = Math.abs(frontLeft.getDriveEncoder());
+		double driveBL = Math.abs(backLeft.getDriveEncoder());
+		double driveFR = Math.abs(frontRight.getDriveEncoder());
+		double driveBR = Math.abs(backRight.getDriveEncoder());
+		return (driveFL + driveFR + driveBL + driveBR) / 4.0;
+	}
+
+	public void setDriveEncodersPosition(double position) {
+		frontLeft.setDriveEncoder(position);
+		backLeft.setDriveEncoder(position);
+		frontRight.setDriveEncoder(position);
+		backRight.setDriveEncoder(position);
+	}
+
+	// public static double[] getEncoderVal() {
+	// 	double[] values = new double[] { frontLeft.getAnalogIn(), backLeft.getAnalogIn(), frontRight.getAnalogIn(),
+	// 			backRight.getAnalogIn() };
+
+	// 	return values;
+	//}
+
   @Override()
   public void periodic() {
     // this.FL_Drive.outputToDashboard();

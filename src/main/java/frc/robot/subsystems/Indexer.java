@@ -46,6 +46,10 @@ public class Indexer extends SubsystemBase {
     _indexMotor.set(ControlMode.PercentOutput, speed);
   }
 
+  public void autoControl(double speed) {
+    _indexMotor.set(ControlMode.PercentOutput, speed);
+  }
+
   public void forward() {
     this.manualControl(MAX_INDEXER_SPEED);
   }

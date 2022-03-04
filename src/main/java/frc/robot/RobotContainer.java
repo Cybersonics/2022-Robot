@@ -21,6 +21,7 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.vision.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -45,6 +46,7 @@ public class RobotContainer {
   public static NavXGyro _gyro = NavXGyro.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
+  //public static TargetVision _targetVision = TargetVision.getInstance();
 
   // Controllers
   public XboxController opController;
@@ -53,12 +55,17 @@ public class RobotContainer {
   public Joystick rightStick;
 
   // A chooser for autonomous commands
-  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines();
+  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive, _indexer, _launcher, _turret, _gyro);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public RobotContainer() {
     // Set up auton selector
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
+    m_chooser.addOption("testMove", _autonRoutines.testMove());
+    m_chooser.addOption("testRotate", _autonRoutines.testRotate());
+    m_chooser.addOption("testShooter", _autonRoutines.testShooter());
+    m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
+    m_chooser.addOption("Auto Shoot and Move", _autonRoutines.getRotateFireAndMove());
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);

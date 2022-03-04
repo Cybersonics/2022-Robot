@@ -7,9 +7,11 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -44,6 +46,13 @@ public class Turret extends SubsystemBase {
   // pwm values in ms for the max and min angles of the shooter hood
   private static final double HOOD_MAX_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MAX_POSITION);
   private static final double HOOD_MIN_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MIN_POSITION);
+
+  
+  //#region Turret Rotation PIDControl
+
+  final double ANGULAR_P = 0.1;
+  final double ANGULAR_D = 0.0;
+  PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
   
   /** Creates a new Turret. */
   private Turret() {    
@@ -77,6 +86,11 @@ public class Turret extends SubsystemBase {
   public void rotateTurret(DoubleSupplier speedSupplier) {
     double speed = speedSupplier.getAsDouble();
     _turretMotor.set(speed*.75);
+  }
+
+  public void setPosition(double yaw) {
+    double rotationSpeed = -this.turnController.calculate(yaw, 0);
+    this._turretMotor.getPIDController().setReference(rotationSpeed, ControlType.kPosition);
   }
   
   private void setupTurretMotor() {

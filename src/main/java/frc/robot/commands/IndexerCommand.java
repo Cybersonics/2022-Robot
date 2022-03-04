@@ -7,37 +7,73 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
+import frc.robot.Constants;
+import edu.wpi.first.wpilibj.Timer;
 
 public class IndexerCommand extends CommandBase {
 
   private Indexer _indexer;
   private XboxController _xboxController;
+  private boolean autoRoutine;
+  private double _speed;
+  private Timer _timer;
 
   /** Creates a new IndexerCommand. */
   public IndexerCommand(Indexer indexer, XboxController driveController) {
     this._indexer = indexer;
     this._xboxController = driveController;
+    this.autoRoutine = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_indexer);
   }
 
+  public IndexerCommand(Indexer indexer, double speed) {
+    this._indexer = indexer;
+    this._speed = speed;
+    this.autoRoutine = true;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(_indexer);
+  }
+
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    _timer = new Timer();
+    _timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this._indexer.manualControl(() -> _xboxController.getLeftY());
+    if (autoRoutine){
+      this._indexer.manualControl(this._speed);
+    }
+    else{
+      this._indexer.manualControl(() -> _xboxController.getLeftY());
+    }
   }
+
+  public void stop() {
+    this._indexer.manualControl(0);
+  }
+
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    stop();
+    this._timer.stop();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (autoRoutine){
+      return this._timer.hasElapsed(Constants.AutoRunTime);
+    }
+    else{
+      return false;
+    }
   }
 }

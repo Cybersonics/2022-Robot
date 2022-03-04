@@ -22,6 +22,7 @@ public final class Constants {
 
     public final static int BluePipeline = 0;
     public final static int RedPipeline = 1;
+    public final static int Tape01 = 0;
 
     public final static int L_Launcher = 21;
     public final static int R_Launcher = 22;
@@ -63,4 +64,11 @@ public final class Constants {
     public final static int BL_STEER_OFFSET=0;
     public final static int FR_STEER_OFFSET=0;
     public final static int BR_STEER_OFFSET=0;
+
+    public final static double ROTATION_PER_INCH = .551;
+
+    public final static double AutoRunTime = 5.0;
+
+    public final static double TURRET_CAMERA_HEIGHT = 0.67945;  //this is in meters
+    public static final double TARGET_HEIGHT = 2.6416;  //this is in meters
 }
