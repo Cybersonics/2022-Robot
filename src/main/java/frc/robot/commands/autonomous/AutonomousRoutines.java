@@ -39,7 +39,7 @@ public class AutonomousRoutines {
 
     public Command testMove() {
         return new SequentialCommandGroup(
-            new AutonDriveDistanceCommand(this._drive, 30, true)
+            new AutonDriveDistanceCommand(this._drive, 30, 0.0, 0.4, 0.0, true)
         );
     }
 
@@ -61,15 +61,39 @@ public class AutonomousRoutines {
         );
     }
 
-    public Command getRotateFireAndMove(){
+    public Command getCenterRotateFireAndMove(){
         return new SequentialCommandGroup(
-            new AutonDriveDistanceCommand(this._drive, 30, false),
+            new AutonDriveDistanceCommand(this._drive, 30, 0.4, 0.0, 0.0, false),
             new RotateCommand(this._drive, 90, this._navxGyro),
             new ParallelCommandGroup(
-                new IndexerCommand(this._indexer, -0.5),
+                new IndexerCommand(this._indexer, -1.0),
                 new ShooterCommand(this._launcher)
             ),
-            new AutonDriveDistanceCommand(this._drive, 10, true)
+            new AutonDriveDistanceCommand(this._drive, 10,0.0, 0.4, 0.0, true)
+        );
+    }
+
+    public Command getLeftRotateFireAndMove(){
+        return new SequentialCommandGroup(
+            new RotateCommand(this._drive, 30, this._navxGyro),
+            new AutonDriveDistanceCommand(this._drive, 25, 0.0, 0.4, 0.0, false),
+            new ParallelCommandGroup(
+                new IndexerCommand(this._indexer, -1.0),
+                new ShooterCommand(this._launcher)
+            ),
+            new AutonDriveDistanceCommand(this._drive, 10 ,0.0, 0.4, 0.0, true)
+        );
+    }
+
+    public Command getRightRotateFireAndMove(){
+        return new SequentialCommandGroup(
+            new RotateCommand(this._drive, 70, this._navxGyro),
+            new AutonDriveDistanceCommand(this._drive, 30, 0.0, -0.4, 0.0, false),
+            new ParallelCommandGroup(
+                new IndexerCommand(this._indexer, -1.0),
+                new ShooterCommand(this._launcher)
+            ),
+            new AutonDriveDistanceCommand(this._drive, 15 ,0.0, -0.4, 0.0, true)
         );
     }
 }

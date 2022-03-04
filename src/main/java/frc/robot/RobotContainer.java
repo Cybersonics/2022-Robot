@@ -61,11 +61,13 @@ public class RobotContainer {
   public RobotContainer() {
     // Set up auton selector
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
-    m_chooser.addOption("testMove", _autonRoutines.testMove());
-    m_chooser.addOption("testRotate", _autonRoutines.testRotate());
-    m_chooser.addOption("testShooter", _autonRoutines.testShooter());
-    m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
-    m_chooser.addOption("Auto Shoot and Move", _autonRoutines.getRotateFireAndMove());
+    // m_chooser.addOption("testMove", _autonRoutines.testMove());
+    // m_chooser.addOption("testRotate", _autonRoutines.testRotate());
+    // m_chooser.addOption("testShooter", _autonRoutines.testShooter());
+    // m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
+    m_chooser.addOption("Center Shoot and Move", _autonRoutines.getCenterRotateFireAndMove());
+    m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
+    m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);
