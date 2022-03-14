@@ -10,12 +10,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.vision.TargetVision;
 
 import frc.robot.Constants;
 
@@ -23,8 +25,10 @@ public class Turret extends SubsystemBase {
 
   public static Turret instance;
   public CANSparkMax _turretMotor;
-  private Servo leftHoodServo;
+  private RelativeEncoder _turretEncoder;
+   private Servo leftHoodServo;
   private Servo rightHoodServo;
+
 
   public static final double WPILIB_MIN_SERVO_ANGLE = 0.0; //degrees
   public static final double WPILIB_MAX_SERVO_ANGLE = 360.0; //degrees
@@ -47,13 +51,15 @@ public class Turret extends SubsystemBase {
   private static final double HOOD_MAX_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MAX_POSITION);
   private static final double HOOD_MIN_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MIN_POSITION);
 
-  
-  //#region Turret Rotation PIDControl
+  final double ANGULAR_P = 0.15;
+  final double ANGULAR_I = 0.01;
+  final double ANGULAR_D = 0.00;
 
-  final double ANGULAR_P = 0.1;
-  final double ANGULAR_D = 0.0;
-  PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
-  
+  PIDController _turretPIDController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
+
+  private double _targetYaw;
+  private boolean _hasTarget;
+
   /** Creates a new Turret. */
   private Turret() {    
     CommandScheduler.getInstance().registerSubsystem(this);
@@ -83,20 +89,40 @@ public class Turret extends SubsystemBase {
     rightHoodServo.setAngle(0);
   }
 
-  public void rotateTurret(DoubleSupplier speedSupplier) {
-    double speed = speedSupplier.getAsDouble();
-    _turretMotor.set(speed*.75);
+  public void rotateTurret(DoubleSupplier speedSupplier, double TURRET_DEADZONE, boolean hasTarget, double targetYaw) {
+
+    double joyStickSpeed = speedSupplier.getAsDouble();
+    double speed;
+    this._hasTarget = hasTarget;
+    this._targetYaw = targetYaw;
+    //System.out.println("Turret 'speed': " + speed);
+    
+    if (this._hasTarget){
+      speed = _turretPIDController.calculate(this._targetYaw, 0);
+    }
+    else{
+      //deadzone clause, deadzone is 0.12 (or not, check TurretCommand.java)
+      if(Math.abs(joyStickSpeed) > TURRET_DEADZONE) {
+        speed = joyStickSpeed*.75;
+      }
+      else {
+        speed = 0;
+      }
+    }
+
+    _turretMotor.set(speed);
+
   }
 
-  public void setPosition(double yaw) {
-    double rotationSpeed = -this.turnController.calculate(yaw, 0);
-    this._turretMotor.getPIDController().setReference(rotationSpeed, ControlType.kPosition);
-  }
   
   private void setupTurretMotor() {
     _turretMotor = new CANSparkMax(Constants.Turret, MotorType.kBrushless);
     _turretMotor.restoreFactoryDefaults();
     _turretMotor.setIdleMode(IdleMode.kBrake);
+
+    // Encoder object created to display position values
+    _turretEncoder = _turretMotor.getEncoder();
+
   }
 
   

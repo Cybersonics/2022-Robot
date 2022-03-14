@@ -67,7 +67,7 @@ public class swerveModule extends SubsystemBase {
 		driveMotor.restoreFactoryDefaults();
 		driveMotor.setInverted(invertDrive);
 		driveMotor.setOpenLoopRampRate(RAMP_RATE);
-		driveMotor.setIdleMode(IdleMode.kCoast);
+		driveMotor.setIdleMode(IdleMode.kCoast); //changed to break at comp
 
     //Create and configure an analog input on a roborio port
     //analogIn = new AnalogInput(analogNum);

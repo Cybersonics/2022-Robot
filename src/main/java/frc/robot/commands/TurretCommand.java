@@ -8,18 +8,24 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.vision.TargetVision;
+import edu.wpi.first.math.util.Units;
 
 public class TurretCommand extends CommandBase {
 
   private Turret _turret;
   private XboxController _controller;
   private TargetVision _targetVision;
+  private double _targetYaw;
+  private boolean _hasTarget;
+  private double _targetDistance;
+
+  public static final double TURRET_DEADZONE = 0.12;
 
   /** Creates a new TurretCommand. */
-  public TurretCommand(Turret turret, XboxController controller) {
+  public TurretCommand(Turret turret, TargetVision targetVision ,XboxController controller) {
     this._turret = turret;
     this._controller = controller;
-    //this._targetVision = targetVision;
+    this._targetVision = targetVision;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(turret, targetVision);
     addRequirements(turret);
@@ -32,20 +38,19 @@ public class TurretCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //this._turret.rotateTurret(() -> this._controller.getRightX());
-    if (this._controller.getRightStickButton()) {
-      // if (this._controller.getLeftTriggerAxis() > 0) {
-        this._targetVision.cameraLEDOn();
-      //   this._turret.rotateTurret(() -> this._controller.getLeftTriggerAxis());
-        double yaw = this._targetVision.getYawVal();
-      // }
-        this._turret.setPosition(yaw);
-      // if(this._controller.getRightTriggerAxis() > 0) {
-      } else {
-      //   this._turret.rotateTurret(() -> this._controller.getRightTriggerAxis());
-        this._turret.rotateTurret(() -> this._controller.getRightX());
-      // }
-      }
+
+    if (this._targetVision.hasTargets()){
+      this._hasTarget = true;
+      this._targetYaw = this._targetVision.getYawVal();
+      this._targetDistance = this._targetVision.getRange();
+      double test = Units.metersToInches(this._targetDistance);
+      //System.out.println("Distance': " + test);
+    }
+    else{
+      this._hasTarget = false;
+    }
+  
+    this._turret.rotateTurret(() -> this._controller.getRightX(), TURRET_DEADZONE, this._hasTarget, this._targetYaw);
     
   }
 

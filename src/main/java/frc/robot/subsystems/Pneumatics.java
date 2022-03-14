@@ -46,6 +46,16 @@ public class Pneumatics extends SubsystemBase {
       _intakeRight.toggle();
   }
 
+  public void intakeOpen(){
+    _intakeLeft.set(Value.kReverse);
+    _intakeRight.set(Value.kReverse);
+  }
+
+  public void intakeClose(){
+    _intakeLeft.set(Value.kForward);
+    _intakeRight.set(Value.kForward);
+  }
+
   public void climberToggle() {
     _climberLeft.toggle();
     _climberRight.toggle();

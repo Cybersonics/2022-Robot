@@ -19,7 +19,7 @@ public class Indexer extends SubsystemBase {
 
   private TalonSRX _indexMotor;
 
-  private static final double MAX_INDEXER_SPEED = .5;
+  private static final double MAX_INDEXER_SPEED = 1;
 
   /** Creates a new Indexer. */
   private Indexer() {

@@ -11,13 +11,13 @@ import frc.robot.subsystems.Launcher;
  */
 public class ShooterCommand extends CommandBase {
   //@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  public double ShooterSpeed = 0.9;
+  public double ShooterSpeed = 0.55;//0.8;//.85
   public double Pivot = 0.9;
 
   private Launcher _shooter;
   private Timer _timer;
-
-  
+  private boolean autoTime;
+  private double _autoeTimeVal;  
 
   /**
    * constructor method
@@ -28,6 +28,15 @@ public class ShooterCommand extends CommandBase {
     _shooter = shooter;
 
     CommandScheduler.getInstance().requiring(shooter);
+    autoTime = false; 
+  }
+
+  public ShooterCommand(Launcher shooter, double autoTimeVal) {
+    _shooter = shooter;
+
+    CommandScheduler.getInstance().requiring(shooter);
+    autoTime = true;
+    this._autoeTimeVal = autoTimeVal;
     
   }
 
@@ -62,6 +71,12 @@ public class ShooterCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this._timer.hasElapsed(Constants.AutoRunTime);
+    if (autoTime){
+      return this._timer.hasElapsed(this._autoeTimeVal);
+    }
+    else {
+      return this._timer.hasElapsed(Constants.AutoRunTime);
+    }
+    
   }
 }

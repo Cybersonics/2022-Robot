@@ -17,6 +17,7 @@ public class IndexerCommand extends CommandBase {
   private boolean autoRoutine;
   private double _speed;
   private Timer _timer;
+  private double _runTime;
 
   /** Creates a new IndexerCommand. */
   public IndexerCommand(Indexer indexer, XboxController driveController) {
@@ -31,6 +32,14 @@ public class IndexerCommand extends CommandBase {
     this._indexer = indexer;
     this._speed = speed;
     this.autoRoutine = true;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(_indexer);
+  }
+  public IndexerCommand(Indexer indexer, double speed, double runTime) {
+    this._indexer = indexer;
+    this._speed = speed;
+    this.autoRoutine = true;
+    this._runTime = runTime;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_indexer);
   }
@@ -70,7 +79,8 @@ public class IndexerCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (autoRoutine){
-      return this._timer.hasElapsed(Constants.AutoRunTime);
+      // return this._timer.hasElapsed(Constants.AutoRunTime);
+      return this._timer.hasElapsed(_runTime);
     }
     else{
       return false;

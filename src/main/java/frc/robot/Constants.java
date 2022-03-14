@@ -67,7 +67,7 @@ public final class Constants {
 
     public final static double ROTATION_PER_INCH = .551;
 
-    public final static double AutoRunTime = 5.0;
+    public final static double AutoRunTime = 3.0;
 
     public final static double TURRET_CAMERA_HEIGHT = 0.67945;  //this is in meters
     public static final double TARGET_HEIGHT = 2.6416;  //this is in meters

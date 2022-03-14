@@ -5,7 +5,9 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -23,7 +25,14 @@ public class TargetVision extends SubsystemBase {
     private double skewVal=0;
     private double areaVal=0;
     private boolean hasTarget = false;
-    
+    private boolean LED_Enable=false;
+
+    // Constants such as camera and target height stored. Change per robot and goal!
+    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(28);
+    final double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
+    // Angle between horizontal and the camera.
+    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(30);
+
     public TargetVision() {
         
         this.camera = new PhotonCamera(Constants.targetCamera);
@@ -46,10 +55,25 @@ public class TargetVision extends SubsystemBase {
             this.pitchVal = result.getBestTarget().getPitch();
             this.skewVal = result.getBestTarget().getSkew();
             this.areaVal = result.getBestTarget().getArea();
-
-            // SmartDashboard.putNumber("Yaw Value", yawVal);
-            // SmartDashboard.putNumber("Pitch Value", pitchVal);
-            // SmartDashboard.putNumber("Area Value", areaVal);
+            this.hasTarget =true;
+       
+            SmartDashboard.putNumber("Yaw Value", yawVal);
+            SmartDashboard.putNumber("Pitch Value", pitchVal);
+            SmartDashboard.putNumber("Area Value", areaVal);
+            SmartDashboard.putBoolean("LEDs OnOff", this.LED_Enable);
+        }
+        else{
+            this.hasTarget = false;
+        }
+        if (LED_Enable){
+            cameraLEDOn();
+            // Set driver mode to off.
+            camera.setDriverMode(false);
+        }
+        else {
+            cameraLEDOff();
+            // Set driver mode to on.
+            camera.setDriverMode(true);
         }
     }
 
@@ -92,9 +116,34 @@ public class TargetVision extends SubsystemBase {
         this.camera.setLED(VisionLEDMode.kBlink);
     }
 
+    public void cameraLEDToggle(){
+        if (LED_Enable) {
+            LED_Enable = false;
+        }
+        else {
+            LED_Enable = true;
+        }
+    }
+
+    public void cameraLEDToggleOff(){
+        LED_Enable = false;
+    }
+    public void cameraLEDToggleOn(){ 
+        LED_Enable = true;
+    }
+
+
     public void cameraLED() {
         //Note that this will use the value of the pipeline for the intensity
         this.camera.setLED(VisionLEDMode.kDefault);
-       
+    }
+
+    public double getRange(){
+        double range = PhotonUtils.calculateDistanceToTargetMeters(
+            CAMERA_HEIGHT_METERS,
+            TARGET_HEIGHT_METERS,
+            CAMERA_PITCH_RADIANS,
+            Units.degreesToRadians(getPitchVal()));
+        return range;
     }
 }

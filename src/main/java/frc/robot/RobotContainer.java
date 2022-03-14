@@ -46,7 +46,8 @@ public class RobotContainer {
   public static NavXGyro _gyro = NavXGyro.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
-  //public static TargetVision _targetVision = TargetVision.getInstance();
+  public static TargetVision _targetVision = TargetVision.getInstance();
+  //ublic static BallVision _ballVision = BallVision.getInstance();
 
   // Controllers
   public XboxController opController;
@@ -55,19 +56,40 @@ public class RobotContainer {
   public Joystick rightStick;
 
   // A chooser for autonomous commands
-  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive, _indexer, _launcher, _turret, _gyro);
+  // private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive, 
+  //                                                                         _indexer, 
+  //                                                                         _launcher, 
+  //                                                                         _turret, 
+  //                                                                         _gyro, 
+  //                                                                         _pneumatics, 
+  //                                                                         _targetVision,
+  //                                                                         _ballVision,
+  //                                                                         _intake);
+  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive, 
+                                                                          _indexer, 
+                                                                          _launcher, 
+                                                                          _turret, 
+                                                                          _gyro, 
+                                                                          _pneumatics, 
+                                                                          _targetVision,
+                                                                          _intake);
+  
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public RobotContainer() {
     // Set up auton selector
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
     // m_chooser.addOption("testMove", _autonRoutines.testMove());
-    // m_chooser.addOption("testRotate", _autonRoutines.testRotate());
+    m_chooser.addOption("testRotate", _autonRoutines.testRotate());
     // m_chooser.addOption("testShooter", _autonRoutines.testShooter());
     // m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
+    m_chooser.addOption("testAutoIntakeDeploy", _autonRoutines.testAutoIntakeDeploy());
     m_chooser.addOption("Center Shoot and Move", _autonRoutines.getCenterRotateFireAndMove());
     m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
     m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
+    m_chooser.addOption("Center 2 ball", _autonRoutines.getCenterTwoBall());
+
+    //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);
@@ -105,7 +127,7 @@ public class RobotContainer {
     _intake.setDefaultCommand(new IntakeCommand(_intake, opController));
 
     // Right xbox joystick X(left/right)
-    _turret.setDefaultCommand(new TurretCommand(_turret, opController));
+    _turret.setDefaultCommand(new TurretCommand(_turret, _targetVision ,opController));
 
     //Reset NavX
     //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
@@ -122,6 +144,8 @@ public class RobotContainer {
     new JoystickButton(opController, 3).whenPressed(() -> _turret.lowerTurret());
     // Set Y Button
     new JoystickButton(opController, 4).whenPressed(() -> _turret.raiseTurret());
+    // Set Right operator controller joystick pressed to ntoggle Vision system
+    new JoystickButton(opController, 10).whenPressed(() -> _targetVision.cameraLEDToggle());
     
     // Set Y button
     // new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberToggle());

@@ -31,99 +31,6 @@ public class Drive extends SubsystemBase {
 
   private static Drive instance;
 
-  // private final double robotWidth;
-  // private final double robotLength;
-
-  // private SwerveDrive FL_Drive;
-  // private SwerveDrive FR_Drive;
-  // private SwerveDrive BL_Drive;
-  // private SwerveDrive BR_Drive;
-
-  // private static final double STEER_P = .5, STEER_I = 0.0, STEER_D = 0.0;
-  // private static final int STATUS_FRAME_PERIOD = 20;
-
-  // private static final double ENCODER_COUNT = 1024.0;
-
-  // /**
-  //  * Constructor to create class responsible for converting joystick interaction
-  //  * to output on drives.
-  //  * 
-  //  * @param width  width of the robot in inches
-  //  * @param length length of the robot in inches
-  //  */
-  // private Drive(double width, double length) {
-  //   this.robotWidth = width;
-  //   this.robotLength = length;
-
-  //   this.FL_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.FrontLeft, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.FL_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.FL_Steer_Id, true))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-
-  //   this.FR_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.FrontRight, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.FR_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.FR_Steer_Id, false))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-
-  //   this.BL_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.BackLeft, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.BL_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.BL_Steer_Id, false))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-
-  //   this.BR_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.BackRight, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.BR_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.BR_Steer_Id, true))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-  // }
-
-  // public void resetDriveEncoders() {
-  //   this.FL_Drive.resetDriveEncoders();
-  //   this.FR_Drive.resetDriveEncoders();
-  //   this.BL_Drive.resetDriveEncoders();
-  //   this.BR_Drive.resetDriveEncoders();
-  // }
-
-  // private CANSparkMax buildDriveMotor(int driveId, boolean invert) {
-  //   var drive = new CANSparkMax(driveId, MotorType.kBrushless);
-  //   drive.restoreFactoryDefaults();
-  //   drive.setIdleMode(IdleMode.kBrake);
-  //   drive.setOpenLoopRampRate(0.125);
-  //   drive.setSmartCurrentLimit(60);
-  //   drive.setInverted(invert);
-
-  //   return drive;
-  // }
-
-  // private TalonSRX buildSteerMotor(int steerId, boolean invert) {
-  //   var steer = new TalonSRX(steerId);
-  //   steer.configFactoryDefault();
-  //   steer.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
-  //   steer.config_kP(0, STEER_P, 0);
-  //   steer.config_kI(0, STEER_I, 0);
-  //   steer.config_kD(0, STEER_D, 0);
-  //   steer.config_IntegralZone(0, 100, 0);
-  //   steer.configAllowableClosedloopError(0, 50, 0);
-  //   steer.setNeutralMode(NeutralMode.Brake);
-  //   steer.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, STATUS_FRAME_PERIOD, 0);
-  //   steer.setInverted(invert);
-  //   steer.setSensorPhase(false);
-
-  //   return steer;
-  // }
-
-  // // Public Methods
-  // public static Drive getInstance(double width, double length) {
-  //   if (instance == null) {
-  //     instance = new Drive(width, length);
-  //   }
-  //   return instance;
-  // }
-
-
 	private static swerveModule frontLeft;
 	private static swerveModule backLeft;
 	private static swerveModule frontRight;
@@ -140,8 +47,6 @@ public class Drive extends SubsystemBase {
 	// TO DO: Correct equation that uses MAX_SPEED
 	public static final double MAX_SPEED = 0.75; // Max speed is 0 to 1
 	public static final double MAX_REVERSIBLE_SPEED_DIFFERENCE = 0.7 * MAX_SPEED;
-
-	public static final double DEADZONE = 0.06;
 
 	public static final double OMEGA_SCALE = 1.0 / 30.0;
 

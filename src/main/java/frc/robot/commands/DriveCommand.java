@@ -62,13 +62,13 @@ public class DriveCommand extends CommandBase {
 
     // double stickForward = this.driveController.getLeftY();
     double stickForward = this.leftStick.getY();
-    SmartDashboard.putNumber("Controller Forward", stickForward);
+    //SmartDashboard.putNumber("Controller Forward", stickForward);
     // double stickStrafe = this.driveController.getLeftX();
     double stickStrafe = this.leftStick.getX();
-    SmartDashboard.putNumber("Controller Strafe", stickStrafe);
+    //SmartDashboard.putNumber("Controller Strafe", stickStrafe);
     // double stickOmega = (this.driveController.getRightX());
     double stickOmega = this.rightStick.getX();
-    SmartDashboard.putNumber("Controller Omega", stickOmega);
+    //SmartDashboard.putNumber("Controller Omega", stickOmega);
 
 		double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(-stickStrafe);
 		double forward = Math.pow(Math.abs(stickForward), leftPow) * Math.signum(stickForward);
