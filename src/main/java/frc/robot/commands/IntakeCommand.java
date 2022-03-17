@@ -65,7 +65,7 @@ public class IntakeCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (autoRoutine){
-      return this._timer.hasElapsed(5.0);
+      return this._timer.hasElapsed(2.5);
     }
     else {
       return false;

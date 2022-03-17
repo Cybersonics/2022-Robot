@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.RobotController;
 //import edu.wpi.first.math.MathUtil; // Use for RoboRio PID
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.utility.DriveLocation;
 
 //import frc.robot.subsystems.setSwerveModule;
 
@@ -174,6 +175,11 @@ public class swerveModule extends SubsystemBase {
   //Get the drive motor speed.
   public double getDriveSpeed() {
     return driveMotor.get();
+  }
+
+  public double getSteerEncoder(){
+    double curPosition = steerMotor.getSelectedSensorPosition(0);
+    return curPosition;
   }
   
   public void stopDriveMotor() {

@@ -106,9 +106,9 @@ public class DriveCommand extends CommandBase {
       deadStick = true;
     }
   
-      SmartDashboard.putNumber("Forward Done", forward);
-      SmartDashboard.putNumber("Strafe Done", strafe);
-      SmartDashboard.putNumber("Rotation Done", omega);
+      // SmartDashboard.putNumber("Forward Done", forward);
+      // SmartDashboard.putNumber("Strafe Done", strafe);
+      // SmartDashboard.putNumber("Rotation Done", omega);
 
 
     this._drive.processInput(forward, strafe, omega, deadStick);

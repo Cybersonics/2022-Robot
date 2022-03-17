@@ -24,7 +24,7 @@ public class AutonDriveDistanceCommand extends CommandBase {
     final double ANGULAR_I = 0.0;
     final double ANGULAR_D = 0.00;
   
-    PIDController _turnPIDController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
+    //PIDController _turnPIDController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
 
     private double _targetYaw;
     private boolean _hasTarget;

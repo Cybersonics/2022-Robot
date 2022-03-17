@@ -8,19 +8,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.utility.DriveLocation;
-import frc.robot.utility.SwerveDrive;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -134,12 +125,12 @@ public class Drive extends SubsystemBase {
 
   public void processInput(double forward, double strafe, double omega, boolean deadStick) {
     double omegaL2 = omega * (WHEEL_BASE_LENGTH / 2.0);
-    SmartDashboard.putNumber("OmegaL2", omegaL2);
+    //SmartDashboard.putNumber("OmegaL2", omegaL2);
     double omegaW2 = omega * (WHEEL_BASE_WIDTH / 2.0);
-    SmartDashboard.putNumber("OmegaW2", omegaW2);
+    //SmartDashboard.putNumber("OmegaW2", omegaW2);
 
-    SmartDashboard.putNumber("Forwrad", forward);
-    SmartDashboard.putNumber("Strafe", strafe);
+    //SmartDashboard.putNumber("Forwrad", forward);
+    //SmartDashboard.putNumber("Strafe", strafe);
 
     // Compute the constants used later for calculating speeds and angles
     double A = strafe - omegaL2;
@@ -205,7 +196,8 @@ public class Drive extends SubsystemBase {
 
     // Set each swerve module, scaling the drive speeds by the maximum speed
     
-    // SmartDashboard.putNumber("angleLF", angleFL);
+	SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
+    //SmartDashboard.putNumber("angleLF", angleFL);
     // SmartDashboard.putNumber("speedLF", speedFL);
     // SmartDashboard.putNumber("SpeedLF/MaxSpeed", speedFL / maxSpeed);
     if (deadStick) {
@@ -280,6 +272,7 @@ public class Drive extends SubsystemBase {
 
   @Override()
   public void periodic() {
+	//SmartDashboard.putNumber("Angle Back Left", backLeft.getSteerEncoder());
     // this.FL_Drive.outputToDashboard();
     // this.FR_Drive.outputToDashboard();
     // this.BR_Drive.outputToDashboard();

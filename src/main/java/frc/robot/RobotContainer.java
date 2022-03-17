@@ -13,6 +13,7 @@ import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.TurretCommand;
 import frc.robot.commands.autonomous.AutonomousRoutines;
+import frc.robot.commands.autonomous.ShooterCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Indexer;
@@ -88,6 +89,7 @@ public class RobotContainer {
     m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
     m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
     m_chooser.addOption("Center 2 ball", _autonRoutines.getCenterTwoBall());
+    m_chooser.addOption("Right 3 ball (WIP)", _autonRoutines.getRightThreeBall());
 
     //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
 
@@ -129,14 +131,16 @@ public class RobotContainer {
     // Right xbox joystick X(left/right)
     _turret.setDefaultCommand(new TurretCommand(_turret, _targetVision ,opController));
 
+    _launcher.setDefaultCommand(new ShooterCommand(_launcher, _turret, _targetVision, opController));
+
     //Reset NavX
     //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
     // new JoystickButton(driveController, 3).whenPressed(() -> _gyro.zeroNavHeading());
     new JoystickButton(leftStick, 7).whenPressed(() -> _gyro.zeroNavHeading());
 
     // Set LB button 
-    new JoystickButton(opController, 6).whenPressed(() -> _launcher.start());
-    new JoystickButton(opController, 6).whenReleased(() -> _launcher.stop());
+    //new JoystickButton(opController, 6).whenPressed(() -> _launcher.start());
+    //new JoystickButton(opController, 6).whenReleased(() -> _launcher.stop());
 
     // Set A button
     new JoystickButton(opController, 1).whenPressed(() -> _pneumatics.intakeToggle());

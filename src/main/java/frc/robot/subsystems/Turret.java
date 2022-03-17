@@ -26,7 +26,7 @@ public class Turret extends SubsystemBase {
   public static Turret instance;
   public CANSparkMax _turretMotor;
   private RelativeEncoder _turretEncoder;
-   private Servo leftHoodServo;
+  private Servo leftHoodServo;
   private Servo rightHoodServo;
 
 
@@ -87,6 +87,16 @@ public class Turret extends SubsystemBase {
   public void lowerTurret() {
     leftHoodServo.setAngle(0);
     rightHoodServo.setAngle(0);
+  }
+
+  public boolean getTurretHoodPosition(){
+    if (leftHoodServo.getAngle()<80) {
+      return true;
+    }
+    else {
+      return false;
+    }
+
   }
 
   public void rotateTurret(DoubleSupplier speedSupplier, double TURRET_DEADZONE, boolean hasTarget, double targetYaw) {
