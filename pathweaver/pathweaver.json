@@ -1,0 +1,9 @@
+{
+  "lengthUnit": "Inch",
+  "exportUnit": "Always Meters",
+  "maxVelocity": 108.0,
+  "maxAcceleration": 24.0,
+  "trackWidth": 25.0,
+  "gameName": "Rapid React",
+  "outputDir": ""
+}

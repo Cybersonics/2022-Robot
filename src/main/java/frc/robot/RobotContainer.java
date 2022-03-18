@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.TurretCommand;
 import frc.robot.commands.autonomous.AutonomousRoutines;
 import frc.robot.subsystems.Climber;
@@ -20,6 +22,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.vision.TargetVision;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +50,8 @@ public class RobotContainer {
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
   public static TargetVision _targetVision = TargetVision.getInstance();
+  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+
 
   // Controllers
   public XboxController opController;
@@ -76,6 +81,13 @@ public class RobotContainer {
     .setDefaultCommand(_drive,
     new DriveCommand(_drive, leftStick, rightStick, _gyro)
     );
+
+    // swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
+    //             swerveSubsystem,
+    //             () -> -leftStick.getRawAxis(OIConstants.kDriverYAxis),
+    //             () -> leftStick.getRawAxis(OIConstants.kDriverXAxis),
+    //             () -> rightStick.getRawAxis(OIConstants.kDriverRotAxis),
+    //             () -> !rightStick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
 
     // Configure the button bindings
     configureButtonBindings();
