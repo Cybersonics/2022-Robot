@@ -5,15 +5,17 @@
 package frc.robot.utility;
 
 public enum DriveLocation {
-    FrontLeft ("Front Left"),
-    FrontRight ("Front Right"),
-    BackLeft ("Back Left"),
-    BackRight ("Back Right");
+    FrontLeft("Front Left"),
+    FrontRight("Front Right"),
+    BackLeft("Back Left"),
+    BackRight("Back Right");
 
     private final String name;
+
     private DriveLocation(String name) {
         this.name = name;
     }
+
     public String getName() {
         return this.name;
     }

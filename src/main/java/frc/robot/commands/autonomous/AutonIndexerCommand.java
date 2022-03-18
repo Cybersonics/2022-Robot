@@ -2,7 +2,6 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.Indexer;
 
@@ -10,28 +9,21 @@ import frc.robot.subsystems.Indexer;
  * An example command that uses an example subsystem.
  */
 public class AutonIndexerCommand extends CommandBase {
-  //@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private Indexer _indexer;
   private Timer _timer;
 
-  /**
-   * constructor method
-   *
-   * @param subsystem The subsystem used by this command.
-   */
   public AutonIndexerCommand(Indexer indexer) {
     _indexer = indexer;
-    CommandScheduler.getInstance().requiring(indexer);
-    
+    addRequirements(indexer);
   }
 
   public void start() {
-      _indexer.forward();
+    _indexer.forward();
   }
 
   public void stop() {
-      _indexer.stop();
+    _indexer.stop();
   }
 
   // Called when the command is initially scheduled.

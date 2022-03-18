@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
-import edu.wpi.first.wpilibj.Timer;
 
 public class IntakeCommand extends CommandBase {
 
@@ -18,7 +18,6 @@ public class IntakeCommand extends CommandBase {
   private XboxController _xboxController;
   private double _time_val;
 
-  /** Creates a new Intake. */
   public IntakeCommand(Intake intake, XboxController xboxController) {
     this._intake = intake;
     this._xboxController = xboxController;
@@ -27,15 +26,15 @@ public class IntakeCommand extends CommandBase {
     addRequirements(_intake);
   }
 
-    /** Creates a new Intake. */
-    public IntakeCommand(Intake intake, double speed, double time_val) {
-      this._intake = intake;
-      this._speed = speed;
-      this._time_val = time_val;
-      this.autoRoutine = true;
-      // Use addRequirements() here to declare subsystem dependencies.
-      addRequirements(_intake);
-    }
+  /** Creates a new Intake. */
+  public IntakeCommand(Intake intake, double speed, double time_val) {
+    this._intake = intake;
+    this._speed = speed;
+    this._time_val = time_val;
+    this.autoRoutine = true;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(_intake);
+  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -47,29 +46,26 @@ public class IntakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //System.out.println("'speed': " + this._speed);
-    if (autoRoutine){
+    if (autoRoutine) {
       this._intake.manualControl(this._speed);
-    }
-    else{
+    } else {
       _intake.manualControl(() -> _xboxController.getRightY());
     }
-    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    this._intake.manualControl(0);
     this._timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (autoRoutine){
+    if (autoRoutine) {
       return this._timer.hasElapsed(this._time_val);
-    }
-    else {
+    } else {
       return false;
     }
   }

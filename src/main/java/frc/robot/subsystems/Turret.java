@@ -7,18 +7,14 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.TargetVision;
-
 import frc.robot.Constants;
 
 public class Turret extends SubsystemBase {
@@ -29,10 +25,9 @@ public class Turret extends SubsystemBase {
   private Servo leftHoodServo;
   private Servo rightHoodServo;
 
-
-  public static final double WPILIB_MIN_SERVO_ANGLE = 0.0; //degrees
-  public static final double WPILIB_MAX_SERVO_ANGLE = 360.0; //degrees
-  private static final double TIME_TO_SERVO_FULL_EXTENSION = 3.48; //Avg time to move from retract to extend
+  public static final double WPILIB_MIN_SERVO_ANGLE = 0.0; // degrees
+  public static final double WPILIB_MAX_SERVO_ANGLE = 360.0; // degrees
+  private static final double TIME_TO_SERVO_FULL_EXTENSION = 3.48; // Avg time to move from retract to extend
   private static final double PERCENT_PER_SECOND = 1.00 / TIME_TO_SERVO_FULL_EXTENSION;
   private static final double DEGREES_PER_SECOND = (WPILIB_MAX_SERVO_ANGLE - WPILIB_MIN_SERVO_ANGLE)
       * PERCENT_PER_SECOND;
@@ -63,7 +58,7 @@ public class Turret extends SubsystemBase {
   private double _encoderZero;
 
   /** Creates a new Turret. */
-  private Turret() {    
+  private Turret() {
     CommandScheduler.getInstance().registerSubsystem(this);
     leftHoodServo = new Servo(0);
     leftHoodServo.setBounds(HOOD_MAX_PWM, CENTER_SERVO_PWM + SERVO_DEADBAND,
@@ -91,11 +86,10 @@ public class Turret extends SubsystemBase {
     rightHoodServo.setAngle(0);
   }
 
-  public boolean getTurretHoodPosition(){
-    if (leftHoodServo.getAngle()<50) {
+  public boolean getTurretHoodPosition() {
+    if (leftHoodServo.getAngle() < 50) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
 
@@ -107,17 +101,14 @@ public class Turret extends SubsystemBase {
     double speed;
     this._hasTarget = hasTarget;
     this._targetYaw = targetYaw;
-    //System.out.println("Turret 'speed': " + speed);
-    
-    if (this._hasTarget){
+
+    if (this._hasTarget) {
       speed = _turretPIDController.calculate(this._targetYaw, 0);
-    }
-    else{
-      //deadzone clause, deadzone is 0.12 (or not, check TurretCommand.java)
-      if(Math.abs(joyStickSpeed) > TURRET_DEADZONE) {
-        speed = joyStickSpeed*.75;
-      }
-      else {
+    } else {
+      // deadzone clause, deadzone is 0.12 (or not, check TurretCommand.java)
+      if (Math.abs(joyStickSpeed) > TURRET_DEADZONE) {
+        speed = joyStickSpeed * .75;
+      } else {
         speed = 0;
       }
     }
@@ -126,7 +117,6 @@ public class Turret extends SubsystemBase {
 
   }
 
-  
   private void setupTurretMotor() {
     _turretMotor = new CANSparkMax(Constants.Turret, MotorType.kBrushless);
     _turretMotor.restoreFactoryDefaults();
@@ -143,13 +133,10 @@ public class Turret extends SubsystemBase {
   }
 
   public void setTurretPosition(double speed, double position) {
-
     double delta = this.getTurretPosition();
-    //double speed = _turretPIDController.calculate(delta, position);
-    if(position < delta) {
-    this._turretMotor.set(speed);
-    }
-    else {
+    if (position < delta) {
+      this._turretMotor.set(speed);
+    } else {
       this._turretMotor.set(0);
     }
 
@@ -158,11 +145,8 @@ public class Turret extends SubsystemBase {
   public double getTurretPosition() {
     return _turretEncoder.getPosition();
   }
-  
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Hood Servo", this.leftHoodServo.getAngle());
-    SmartDashboard.putNumber("Right Hood Servo", this.rightHoodServo.getAngle());
-    SmartDashboard.putNumber("Turret Encoder Position", this._turretEncoder.getPosition());
   }
 }

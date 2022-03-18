@@ -4,11 +4,11 @@
 
 package frc.robot.utility;
 
-import edu.wpi.first.wpilibj.Encoder;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
@@ -58,12 +58,12 @@ public class SwerveDrive {
     }
 
     public void setAngleAndSpeed(double angle, double speed) {
-        SmartDashboard.putNumber(this.driveLocation.getName()+" Angle", angle);
-        SmartDashboard.putNumber(this.driveLocation.getName()+" Speed", speed);
+        SmartDashboard.putNumber(this.driveLocation.getName() + " Angle", angle);
+        SmartDashboard.putNumber(this.driveLocation.getName() + " Speed", speed);
         double currentPosition = getSteerSensorPosition();
-        SmartDashboard.putNumber(this.driveLocation.getName()+" Current Position", currentPosition);
+        SmartDashboard.putNumber(this.driveLocation.getName() + " Current Position", currentPosition);
         double currentAngle = (currentPosition * 360.0 / this.encoderCountPerRotation) % 360.0;
-        SmartDashboard.putNumber(this.driveLocation.getName()+" Current Angle", currentAngle);
+        SmartDashboard.putNumber(this.driveLocation.getName() + " Current Angle", currentAngle);
         // The angle from the encoder is in the range [0, 360], but the swerve
         // computations
         // return angles in the range [-180, 180], so transform the encoder angle to
@@ -76,28 +76,29 @@ public class SwerveDrive {
         double targetAngle = -angle;
         double deltaDegrees = targetAngle - currentAngle;
 
-        SmartDashboard.putNumber(this.driveLocation.getName()+" TargetAngle", targetAngle);
-        SmartDashboard.putNumber(this.driveLocation.getName()+" DeltaDegrees", deltaDegrees);
+        SmartDashboard.putNumber(this.driveLocation.getName() + " TargetAngle", targetAngle);
+        SmartDashboard.putNumber(this.driveLocation.getName() + " DeltaDegrees", deltaDegrees);
         // If we need to turn more than 180 degrees, it's faster to turn in the opposite
         // direction
         // if (Math.abs(deltaDegrees) > 180.0) {
-        //     deltaDegrees -= 360.0 * Math.signum(deltaDegrees);
-        //     speed = -speed;
+        // deltaDegrees -= 360.0 * Math.signum(deltaDegrees);
+        // speed = -speed;
         // }
-        // // If we need to turn more than 90 degrees, we can reverse the wheel direction
+        // // If we need to turn more than 90 degrees, we can reverse the wheel
+        // direction
         // // instead and
         // // only rotate by the complement
 
         // // if (Math.abs(speed) <= MAX_SPEED){
         // if (Math.abs(deltaDegrees) > 90.0) {
-        //     deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
-        //     speed = -speed;
+        // deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
+        // speed = -speed;
         // }
         // }
 
         double targetPosition = currentPosition + deltaDegrees * this.encoderCountPerRotation / 360.0;
-        
-        SmartDashboard.putNumber(this.driveLocation.getName()+" Target Position", targetPosition);
+
+        SmartDashboard.putNumber(this.driveLocation.getName() + " Target Position", targetPosition);
         setSteerMotorPosition(targetPosition);
         setDriveMotorSpeed(speed);
     }

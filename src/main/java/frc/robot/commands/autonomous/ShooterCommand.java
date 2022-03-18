@@ -1,22 +1,14 @@
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.vision.*;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.vision.TargetVision;
 
-/**
- * An example command that uses an example subsystem.
- */
 public class ShooterCommand extends CommandBase {
-  //@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  //public double ShooterSpeed = 0.55;//0.8;//.85
   public double Pivot = 0.9;
 
   private Launcher _shooter;
@@ -28,24 +20,8 @@ public class ShooterCommand extends CommandBase {
   private boolean simple;
   private XboxController _controller;
 
-  /**
-   * constructor method
-   *
-   * @param subsystem The subsystem used by this command.
-  //  */
-  // public ShooterCommand(Launcher shooter) {
-  //   _shooter = shooter;
-  //   autoTime = false; 
-  //   simple = true;
-  //   //CommandScheduler.getInstance().requiring(shooter);
-  //   addRequirements(shooter);
-
-  // }
-
   public ShooterCommand(Launcher shooter, double autoTimeVal) {
     _shooter = shooter;
-
-    //CommandScheduler.getInstance().requiring(shooter);
     autoTime = true;
     this._autoTimeVal = autoTimeVal;
     simple = true;
@@ -57,18 +33,9 @@ public class ShooterCommand extends CommandBase {
     this._turret = turret;
     this._targetVision = targetVision;
     this._controller = controller;
-    //CommandScheduler.getInstance().requiring(shooter);
-    autoTime = false; 
+    autoTime = false;
     simple = false;
     addRequirements(shooter);
-  }
-
-  public void fire() {
-      _shooter.start();
-  }
-
-  public void stop() {
-      _shooter.stop();
   }
 
   // Called when the command is initially scheduled.
@@ -81,22 +48,19 @@ public class ShooterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (simple){
-      fire();
-    }
-    else {
+    if (simple) {
+    _shooter.start();
+    } else {
       double targetDistance = this._targetVision.getRange();
       double test = Units.metersToInches(targetDistance);
-      //System.out.println("Distance': " + test);
-      if (this._controller.getRightBumper()){
-        if (this._turret.getTurretHoodPosition()){
+      // System.out.println("Distance': " + test);
+      if (this._controller.getRightBumper()) {
+        if (this._turret.getTurretHoodPosition()) {
           this._shooter.calculatedLaunch(0.75);
-        }
-        else {
+        } else {
           this._shooter.calculatedLaunch(0.5);
         }
-      }
-      else {
+      } else {
         this._shooter.stop();
       }
     }
@@ -105,19 +69,17 @@ public class ShooterCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    stop();
+    _shooter.stop();
     this._timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (autoTime){
+    if (autoTime) {
       return this._timer.hasElapsed(this._autoTimeVal);
-    }
-    else {
+    } else {
       return false;
     }
-    
   }
 }

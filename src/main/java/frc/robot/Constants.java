@@ -60,15 +60,15 @@ public final class Constants {
     public static final int R_CLIMBER_OUT = 4;
     public static final int R_CLIMBER_IN = 5;
 
-    public final static int FL_STEER_OFFSET=0;
-    public final static int BL_STEER_OFFSET=0;
-    public final static int FR_STEER_OFFSET=0;
-    public final static int BR_STEER_OFFSET=0;
+    public final static int FL_STEER_OFFSET = 0;
+    public final static int BL_STEER_OFFSET = 0;
+    public final static int FR_STEER_OFFSET = 0;
+    public final static int BR_STEER_OFFSET = 0;
 
     public final static double ROTATION_PER_INCH = .551;
 
     public final static double AutoRunTime = 3.0;
 
-    public final static double TURRET_CAMERA_HEIGHT = 0.67945;  //this is in meters
-    public static final double TARGET_HEIGHT = 2.6416;  //this is in meters
+    public final static double TURRET_CAMERA_HEIGHT = 0.67945; // this is in meters
+    public static final double TARGET_HEIGHT = 2.6416; // this is in meters
 }

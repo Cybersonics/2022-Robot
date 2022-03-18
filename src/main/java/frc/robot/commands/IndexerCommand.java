@@ -4,11 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj.Timer;
 
 public class IndexerCommand extends CommandBase {
 
@@ -35,6 +34,7 @@ public class IndexerCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_indexer);
   }
+
   public IndexerCommand(Indexer indexer, double speed, double runTime) {
     this._indexer = indexer;
     this._speed = speed;
@@ -43,7 +43,6 @@ public class IndexerCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_indexer);
   }
-
 
   // Called when the command is initially scheduled.
   @Override
@@ -55,34 +54,26 @@ public class IndexerCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (autoRoutine){
+    if (autoRoutine) {
       this._indexer.manualControl(this._speed);
-    }
-    else{
+    } else {
       this._indexer.manualControl(() -> _xboxController.getLeftY());
     }
   }
 
-  public void stop() {
-    this._indexer.manualControl(0);
-  }
-
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    stop();
+    this._indexer.manualControl(0);
     this._timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (autoRoutine){
-      // return this._timer.hasElapsed(Constants.AutoRunTime);
+    if (autoRoutine) {
       return this._timer.hasElapsed(_runTime);
-    }
-    else{
+    } else {
       return false;
     }
   }

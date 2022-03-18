@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeCommand;
@@ -22,10 +25,7 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.vision.*;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.vision.TargetVision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -38,7 +38,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // Subsystems
-  //public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
   public static Drive _drive = Drive.getInstance();
   public static Climber _climber = Climber.getInstance();
   public static Indexer _indexer = Indexer.getInstance();
@@ -48,7 +47,6 @@ public class RobotContainer {
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
   public static TargetVision _targetVision = TargetVision.getInstance();
-  //ublic static BallVision _ballVision = BallVision.getInstance();
 
   // Controllers
   public XboxController opController;
@@ -57,60 +55,53 @@ public class RobotContainer {
   public Joystick rightStick;
 
   // A chooser for autonomous commands
-  // private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive, 
-  //                                                                         _indexer, 
-  //                                                                         _launcher, 
-  //                                                                         _turret, 
-  //                                                                         _gyro, 
-  //                                                                         _pneumatics, 
-  //                                                                         _targetVision,
-  //                                                                         _ballVision,
-  //                                                                         _intake);
-  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive, 
-                                                                          _indexer, 
-                                                                          _launcher, 
-                                                                          _turret, 
-                                                                          _gyro, 
-                                                                          _pneumatics, 
-                                                                          _targetVision,
-                                                                          _intake);
-  
+  private final AutonomousRoutines _autonRoutines = new AutonomousRoutines(_drive,
+      _indexer,
+      _launcher,
+      _turret,
+      _gyro,
+      _pneumatics,
+      _targetVision,
+      _intake);
+
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public RobotContainer() {
+    buildAutonSelector();
+
+    opController = new XboxController(Constants.OP_CONTROLLER);
+    leftStick = new Joystick(Constants.LEFT_STICK);
+    rightStick = new Joystick(Constants.RIGHT_STICK);
+
+    CommandScheduler.getInstance()
+        .setDefaultCommand(_drive,
+            new DriveCommand(_drive, leftStick, rightStick, _gyro));
+
+    // Configure the button bindings
+    configureButtonBindings();
+  }
+
+  private void buildAutonSelector() {
     // Set up auton selector
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
+    m_chooser.addOption("Center Shoot and Move", _autonRoutines.getCenterRotateFireAndMove());
+    m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
+    m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
+    m_chooser.addOption("Center 2 ball", _autonRoutines.getCenterTwoBall());
+
     // m_chooser.addOption("testMove", _autonRoutines.testMove());
     m_chooser.addOption("testRotate", _autonRoutines.testRotate());
     // m_chooser.addOption("testShooter", _autonRoutines.testShooter());
     // m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
     m_chooser.addOption("testAutoIntakeDeploy", _autonRoutines.testAutoIntakeDeploy());
-    m_chooser.addOption("Center Shoot and Move", _autonRoutines.getCenterRotateFireAndMove());
-    m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
-    m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
-    m_chooser.addOption("Center 2 ball", _autonRoutines.getCenterTwoBall());
     m_chooser.addOption("Right 3 ball (WIP)", _autonRoutines.getRightThreeBall());
     m_chooser.addOption("testTurretRotate", _autonRoutines.testTurretRotate());
 
-    //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
+    // m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at
+    // comp
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);
-
-    opController = new XboxController(Constants.OP_CONTROLLER);
-    //driveController = new XboxController(Constants.DRIVE_CONTROLLER);
-    leftStick = new Joystick(Constants.LEFT_STICK);
-    rightStick = new Joystick(Constants.RIGHT_STICK);
-
-    CommandScheduler.getInstance()
-    // .setDefaultCommand(_drive,
-    // new DriveCommand(_drive, driveController, _gyro)
-    .setDefaultCommand(_drive,
-    new DriveCommand(_drive, leftStick, rightStick, _gyro)
-    );
-
-    // Configure the button bindings
-    configureButtonBindings();
   }
 
   /**
@@ -123,25 +114,20 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    //Left xbox joystick Y(up/down)
+    // Left xbox joystick Y(up/down)
     _indexer.setDefaultCommand(new IndexerCommand(_indexer, opController));
 
     // Right xbox joystick Y(up/down)
     _intake.setDefaultCommand(new IntakeCommand(_intake, opController));
 
     // Right xbox joystick X(left/right)
-    _turret.setDefaultCommand(new TurretCommand(_turret, _targetVision ,opController));
+    _turret.setDefaultCommand(new TurretCommand(_turret, _targetVision, opController));
 
+    // RB button
     _launcher.setDefaultCommand(new ShooterCommand(_launcher, _turret, _targetVision, opController));
 
-    //Reset NavX
-    //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
-    // new JoystickButton(driveController, 3).whenPressed(() -> _gyro.zeroNavHeading());
+    // Reset NavX
     new JoystickButton(leftStick, 7).whenPressed(() -> _gyro.zeroNavHeading());
-
-    // Set LB button 
-    //new JoystickButton(opController, 6).whenPressed(() -> _launcher.start());
-    //new JoystickButton(opController, 6).whenReleased(() -> _launcher.stop());
 
     // Set A button
     new JoystickButton(opController, 1).whenPressed(() -> _pneumatics.intakeToggle());
@@ -151,22 +137,15 @@ public class RobotContainer {
     new JoystickButton(opController, 4).whenPressed(() -> _turret.raiseTurret());
     // Set Right operator controller joystick pressed to ntoggle Vision system
     new JoystickButton(opController, 10).whenPressed(() -> _targetVision.cameraLEDToggle());
-    
+
     // Set Y button
-    // new JoystickButton(driveController, 4).whenPressed(() -> _pneumatics.climberToggle());
     new JoystickButton(rightStick, 3).whenPressed(() -> _pneumatics.climberToggle());
-   // Set B button
-    // new JoystickButton(driveController, 2).whenPressed(() -> _climber.releaseClimber());
-    // new JoystickButton(driveController, 2).whenReleased(() -> _climber.stop());
+    // Set B button
     new JoystickButton(rightStick, 4).whenPressed(() -> _climber.releaseClimber());
     new JoystickButton(rightStick, 4).whenReleased(() -> _climber.stop());
     // Set A button
-    // new JoystickButton(driveController, 1).whenPressed(() -> _climber.retractClimber());
-    // new JoystickButton(driveController, 1).whenReleased(() -> _climber.stop());
     new JoystickButton(rightStick, 5).whenPressed(() -> _climber.retractClimber());
     new JoystickButton(rightStick, 5).whenReleased(() -> _climber.stop());
-
-
   }
 
   /**

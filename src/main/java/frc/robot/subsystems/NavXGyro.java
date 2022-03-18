@@ -10,7 +10,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
 
-public class NavXGyro extends SubsystemBase { 
+public class NavXGyro extends SubsystemBase {
 
   private static NavXGyro instance;
 
@@ -25,9 +25,9 @@ public class NavXGyro extends SubsystemBase {
     zeroHeading = getNavHeading();
     zeroAngle = getNavAngle();
     System.out.println("Setup ZeroAngle " + zeroAngle);
-    
+
   }
-  
+
   // Public Methods
   public static NavXGyro getInstance() {
     if (instance == null) {
@@ -37,29 +37,29 @@ public class NavXGyro extends SubsystemBase {
   }
 
   public double getNavHeading() {
-		double heading = navX.getFusedHeading();
-		return heading;
-	}
+    double heading = navX.getFusedHeading();
+    return heading;
+  }
 
-	public double getNavAngle() {
-		double angle = navX.getAngle();
-		return angle;
-	}
+  public double getNavAngle() {
+    double angle = navX.getAngle();
+    return angle;
+  }
 
-	public void zeroNavHeading() {
-		//navX.zeroYaw();
+  public void zeroNavHeading() {
+    // navX.zeroYaw();
     navX.reset();
     zeroHeading = getNavHeading();
     zeroAngle = getNavAngle();
     System.out.println("ZeroHeading: " + zeroHeading);
-    System.out.println("ZeroAngle: " + zeroAngle);  
+    System.out.println("ZeroAngle: " + zeroAngle);
   }
 
-  public double getZeroHeading(){
+  public double getZeroHeading() {
     return zeroHeading;
   }
 
-  public double getZeroAngle(){
+  public double getZeroAngle() {
     return zeroAngle;
   }
 }

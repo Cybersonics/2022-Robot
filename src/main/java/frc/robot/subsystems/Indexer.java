@@ -28,7 +28,7 @@ public class Indexer extends SubsystemBase {
     _indexMotor = new TalonSRX(Constants.INDEXER_ID);
     _indexMotor.configFactoryDefault();
   }
-  
+
   // Public Methods
   public static Indexer getInstance() {
     if (instance == null) {

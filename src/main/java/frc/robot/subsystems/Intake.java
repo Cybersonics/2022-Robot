@@ -25,7 +25,6 @@ public class Intake extends SubsystemBase {
 
   private static final double MAX_INDEXER_SPEED = .5;
 
-
   /** Creates a new Intake. */
   private Intake() {
     CommandScheduler.getInstance().registerSubsystem(this);
@@ -41,7 +40,7 @@ public class Intake extends SubsystemBase {
     }
     return instance;
   }
-  
+
   public void manualControl(DoubleSupplier supplierSpeed) {
     var speed = supplierSpeed.getAsDouble();
     _intakeMotor.set(ControlMode.PercentOutput, speed);
@@ -51,19 +50,20 @@ public class Intake extends SubsystemBase {
     _intakeMotor.set(ControlMode.PercentOutput, speed);
   }
 
-  // public void openIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid _intakeRight)
+  // public void openIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid
+  // _intakeRight)
   // {
-  //   _intakeLeft.set(Value.kForward);
-  //   _intakeRight.set(Value.kForward);
+  // _intakeLeft.set(Value.kForward);
+  // _intakeRight.set(Value.kForward);
   // }
 
-  // public void closeIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid _intakeRight)
+  // public void closeIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid
+  // _intakeRight)
   // {
-  //   _intakeLeft.set(Value.kReverse);
-  //   _intakeRight.set(Value.kReverse);
+  // _intakeLeft.set(Value.kReverse);
+  // _intakeRight.set(Value.kReverse);
   // }
 
-  
   public void forward() {
     this.manualControl(MAX_INDEXER_SPEED);
   }

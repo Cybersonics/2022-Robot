@@ -15,18 +15,22 @@ public class Pneumatics extends SubsystemBase {
 
   private static Pneumatics instance;
 
-  private DoubleSolenoid _intakeLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.L_INTAKE_OUT, Constants.L_INTAKE_IN);
-  private DoubleSolenoid _intakeRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.R_INTAKE_OUT, Constants.R_INTAKE_IN);
-  private DoubleSolenoid _climberLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.L_CLIMBER_OUT, Constants.L_CLIMBER_IN);
-  private DoubleSolenoid _climberRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.R_CLIMBER_OUT, Constants.R_CLIMBER_IN);
-  
+  private DoubleSolenoid _intakeLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.L_INTAKE_OUT,
+      Constants.L_INTAKE_IN);
+  private DoubleSolenoid _intakeRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.R_INTAKE_OUT,
+      Constants.R_INTAKE_IN);
+  private DoubleSolenoid _climberLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.L_CLIMBER_OUT,
+      Constants.L_CLIMBER_IN);
+  private DoubleSolenoid _climberRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.R_CLIMBER_OUT,
+      Constants.R_CLIMBER_IN);
+
   Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
   /** Creates a new Pnuematics. */
   private Pneumatics() {
     pcmCompressor.enableDigital();
-    //pcmCompressor.disable();
-    
+    // pcmCompressor.disable();
+
     _intakeLeft.set(Value.kForward);
     _intakeRight.set(Value.kForward);
 
@@ -42,16 +46,16 @@ public class Pneumatics extends SubsystemBase {
   }
 
   public void intakeToggle() {
-      _intakeLeft.toggle(); 
-      _intakeRight.toggle();
+    _intakeLeft.toggle();
+    _intakeRight.toggle();
   }
 
-  public void intakeOpen(){
+  public void intakeOpen() {
     _intakeLeft.set(Value.kReverse);
     _intakeRight.set(Value.kReverse);
   }
 
-  public void intakeClose(){
+  public void intakeClose() {
     _intakeLeft.set(Value.kForward);
     _intakeRight.set(Value.kForward);
   }

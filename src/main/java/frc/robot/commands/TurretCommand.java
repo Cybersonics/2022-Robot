@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.vision.TargetVision;
-import edu.wpi.first.math.util.Units;
 
 public class TurretCommand extends CommandBase {
 
@@ -21,42 +21,38 @@ public class TurretCommand extends CommandBase {
 
   public static final double TURRET_DEADZONE = 0.12;
 
-  /** Creates a new TurretCommand. */
-  public TurretCommand(Turret turret, TargetVision targetVision ,XboxController controller) {
+  public TurretCommand(Turret turret, TargetVision targetVision, XboxController controller) {
     this._turret = turret;
     this._controller = controller;
     this._targetVision = targetVision;
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(turret, targetVision);
+    // addRequirements(turret, targetVision);
     addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() { }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if (this._targetVision.hasTargets()){
+    if (this._targetVision.hasTargets()) {
       this._hasTarget = true;
       this._targetYaw = this._targetVision.getYawVal();
       this._targetDistance = this._targetVision.getRange();
       double test = Units.metersToInches(this._targetDistance);
-      //System.out.println("Distance': " + test);
-    }
-    else{
+      // System.out.println("Distance': " + test);
+    } else {
       this._hasTarget = false;
     }
-  
+
     this._turret.rotateTurret(() -> this._controller.getRightX(), TURRET_DEADZONE, this._hasTarget, this._targetYaw);
-    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) { }
 
   // Returns true when the command should end.
   @Override

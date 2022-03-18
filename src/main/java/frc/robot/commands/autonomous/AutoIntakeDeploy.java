@@ -4,18 +4,17 @@
 
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Pneumatics;
-import edu.wpi.first.wpilibj.Timer;
 
 public class AutoIntakeDeploy extends CommandBase {
-  /** Creates a new AutoIntakeDeploy. */
   private Pneumatics _pneumatics;
   private Timer _timer;
 
   public AutoIntakeDeploy(Pneumatics pnematics) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this._pneumatics = pnematics;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pnematics);
   }
 
