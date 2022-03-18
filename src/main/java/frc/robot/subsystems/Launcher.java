@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,8 +20,8 @@ public class Launcher extends SubsystemBase {
   private static Launcher instance;
   private RelativeEncoder _leftEncoder;
   private RelativeEncoder _rightEncoder;
-  //private SparkMaxPIDController _rightPIDController;
-  //private SparkMaxPIDController _leftPIDController;
+  private SparkMaxPIDController _rightPIDController;
+  private SparkMaxPIDController _leftPIDController;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
 
   private Launcher() {
@@ -28,22 +30,22 @@ public class Launcher extends SubsystemBase {
     setupLeftMotor();
     //_leftMotor.follow(_rightMotor);
      // PID coefficients
-     kP = 6e-5; 
-     kI = 0;
-     kD = 0; 
+     kP = 0.0001;//6e-5; 
+     kI = 0.0000001;
+     kD = 0.000001; 
      kIz = 0; 
-     kFF = 0.000015; 
+     kFF = 0.00017;//0.00003; 
      kMaxOutput = 1; 
      kMinOutput = -1;
      maxRPM = 5700;
      
        // set PID coefficients
-    // _rightPIDController.setP(kP);
-    // _rightPIDController.setI(kI);
-    // _rightPIDController.setD(kD);
-    // _rightPIDController.setIZone(kIz);
-    // _rightPIDController.setFF(kFF);
-    // _rightPIDController.setOutputRange(kMinOutput, kMaxOutput);
+    _rightPIDController.setP(kP);
+    _rightPIDController.setI(kI);
+    _rightPIDController.setD(kD);
+    _rightPIDController.setIZone(kIz);
+    _rightPIDController.setFF(kFF);
+    _rightPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
   }
 
@@ -58,10 +60,15 @@ public class Launcher extends SubsystemBase {
   public void calculatedLaunch(double speed) {
     _rightMotor.set(speed);
     _leftMotor.set(speed);
-    double setPoint = speed * maxRPM;
- 
-    //_rightPIDController.setReference(setPoint, CANSparkMax.ControlType.kVelocity);
-    //_leftMotor.follow(_rightMotor);
+    
+    // double setPoint = speed * maxRPM;
+    //  _rightPIDController.setReference(setPoint, CANSparkMax.ControlType.kVelocity);
+    // _leftMotor.follow(_rightMotor);
+  }
+
+  public void calculateReference(double reference) {
+    _rightPIDController.setReference(reference, CANSparkMax.ControlType.kVelocity);
+    _leftMotor.follow(_rightMotor, true);
   }
 
   public void start() {
@@ -87,7 +94,7 @@ public class Launcher extends SubsystemBase {
     _rightMotor.restoreFactoryDefaults();
     _rightMotor.setIdleMode(IdleMode.kCoast);
     _rightEncoder = _rightMotor.getEncoder();
-    //_rightPIDController = _rightMotor.getPIDController();
+    _rightPIDController = _rightMotor.getPIDController();
   }
 
   private void setupLeftMotor() {
@@ -100,7 +107,7 @@ public class Launcher extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    //SmartDashboard.putNumber("Shooter Speed", _shooter.getLeftEncoder());
+    SmartDashboard.putNumber("Shooter Speed", getRightEncoder());
     //System.out.println("Left Shooter Encoder Speed: " + getLeftEncoder());
     //System.out.println("Right Shooter Encoder Speed: " + _shooter.getRightEncoder());
   }

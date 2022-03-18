@@ -167,8 +167,8 @@ this._intake = intake;
             //new RotateCommand(this._drive, -100, this._navxGyro),
             new ParallelCommandGroup(
                 new AutoVisionCommand(this._targetVision),
-                //new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.2, 0.0, true, this._ballVision),
-                new AutonDriveDistanceCommand(this._drive, 40, -0.4, 0.1, 0.0, true, this._ballVision),
+                new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.2, 0.0, true, this._ballVision),
+                //new AutonDriveDistanceCommand(this._drive, 40, -0.4, 0.1, 0.0, true, this._ballVision),
                 new IntakeCommand(this._intake, 1.0, 7),
                 new IndexerCommand(this._indexer, -1.0, 7),
                 new ShooterCommand(this._launcher, 7)

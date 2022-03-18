@@ -144,6 +144,10 @@ public class TargetVision extends SubsystemBase {
             TARGET_HEIGHT_METERS,
             CAMERA_PITCH_RADIANS,
             Units.degreesToRadians(getPitchVal()));
+            double rangeInInches = Units.metersToInches(range);
+        
+        SmartDashboard.putNumber("Camera Distance", rangeInInches);
+
         return range;
     }
 }

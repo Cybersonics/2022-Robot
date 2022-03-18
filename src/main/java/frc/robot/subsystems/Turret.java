@@ -91,6 +91,11 @@ public class Turret extends SubsystemBase {
     rightHoodServo.setAngle(0);
   }
 
+  public void setTurretAngle(double angle) {
+    leftHoodServo.setAngle(angle);
+    rightHoodServo.setAngle(angle);
+  }
+
   public boolean getTurretHoodPosition(){
     if (leftHoodServo.getAngle()<50) {
       return true;

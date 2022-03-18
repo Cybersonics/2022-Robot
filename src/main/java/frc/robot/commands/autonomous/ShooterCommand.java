@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.vision.*;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,6 +28,8 @@ public class ShooterCommand extends CommandBase {
   private TargetVision _targetVision;
   private boolean simple;
   private XboxController _controller;
+
+  private double rpmReference = 3400;
 
   /**
    * constructor method
@@ -80,7 +83,9 @@ public class ShooterCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() {    
+    rpmReference = SmartDashboard.getNumber("RPM Speed", rpmReference);
+    SmartDashboard.putNumber("RPM Speed", rpmReference);
     if (simple){
       fire();
     }
@@ -91,12 +96,12 @@ public class ShooterCommand extends CommandBase {
       if (this._controller.getRightBumper()){
         if (this._turret.getTurretHoodPosition()){
           this._shooter.calculatedLaunch(0.75);
-        }
-        else {
+        } else {
           this._shooter.calculatedLaunch(0.5);
         }
-      }
-      else {
+      } else if (this._controller.getLeftBumper()) {
+        this._shooter.calculateReference(rpmReference);
+      } else {
         this._shooter.stop();
       }
     }
@@ -118,6 +123,5 @@ public class ShooterCommand extends CommandBase {
     else {
       return false;
     }
-    
   }
 }
