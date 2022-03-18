@@ -2,25 +2,35 @@ package frc.robot.utility;
 
 import frc.robot.Constants;
 
-public class Interpolation {
-    
-    public double getReference(double distance) {
-        double minReference = 0.0;
-        double maxReference = 0.0;
-        double reference;
+public class Interpolation {    
+    public static double getReference(double distance) {
+        double minDist = 0.0, minRPM = 0.0;
+        double maxDist = 0.0, maxRPM = 0.0;
         double[][] setPoints = Constants.distanceReference;
-        for(int i = 0; i > setPoints.length; i++) {
-            if(setPoints[i][0] > distance) {
-                maxReference = setPoints[i][1];
-            } else if (setPoints[i][0] < distance) {
-                minReference = setPoints[i][1];
+
+        if (distance <= Constants.MIN_REFERENCE[0]) {
+            minDist = distance;
+            minRPM = Constants.MIN_REFERENCE[1];
+            maxDist = Constants.MIN_REFERENCE[0];
+            maxRPM = Constants.MIN_REFERENCE[1];
+        } else if (distance >= Constants.MAX_REFERENCE[0]) {
+            minDist = Constants.MAX_REFERENCE[0];
+            minRPM = Constants.MAX_REFERENCE[1];
+            maxDist = distance;
+            maxRPM = Constants.MAX_REFERENCE[1];
+        } else {
+            for(int i = 0; i < setPoints.length; i++) {
+                if(setPoints[i][0] >= distance) {
+                    maxRPM = setPoints[i][1];
+                    maxDist = setPoints[i][0];
+                } else if (setPoints[i][0] <= distance) {
+                    minRPM = setPoints[i][1];
+                    minDist = setPoints[i][0];
+                }
             }
         }
-        double dif = maxReference - minReference;
-        double minDif = distance - minReference;
-        double maxDif = maxReference - distance;
+        double dif = maxRPM - minRPM;
 
-
-        return minReference;
+        return (minRPM + (distance - minDist) * (dif) / (maxDist - minDist));
     }
 }

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.vision.*;
+import frc.robot.utility.Interpolation;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,9 +91,6 @@ public class ShooterCommand extends CommandBase {
       fire();
     }
     else {
-      double targetDistance = this._targetVision.getRange();
-      double test = Units.metersToInches(targetDistance);
-      //System.out.println("Distance': " + test);
       if (this._controller.getRightBumper()){
         if (this._turret.getTurretHoodPosition()){
           this._shooter.calculatedLaunch(0.75);
@@ -100,6 +98,9 @@ public class ShooterCommand extends CommandBase {
           this._shooter.calculatedLaunch(0.5);
         }
       } else if (this._controller.getLeftBumper()) {
+        double targetDistance = this._targetVision.getRange();
+        double test = Units.metersToInches(targetDistance);
+        rpmReference = Interpolation.getReference(test);
         this._shooter.calculateReference(rpmReference);
       } else {
         this._shooter.stop();

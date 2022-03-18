@@ -72,14 +72,12 @@ public final class Constants {
     public final static double TURRET_CAMERA_HEIGHT = 0.67945;  //this is in meters
     public static final double TARGET_HEIGHT = 2.6416;  //this is in meters
 
+    public final static double[] MIN_REFERENCE = {100, 3300};
+    public final static double[] MAX_REFERENCE = {190, 4100};
     public final static double[][] distanceReference = {
-    // Distance: 100     RPM: 3300
-    {100, 3300},
-    // Distance: 130     RPM: 3450
-    {130, 3450},
-    // Distance: 160     RPM: 3670
-    {160, 3670},
-    // Distance: 190     RPM: 4100
-    {190, 4100}
+        MIN_REFERENCE, // Distance: 100 RPM: 3300
+        {130, 3450},   // Distance: 130 RPM: 3450
+        {160, 3670},   // Distance: 160 RPM: 3670
+        MAX_REFERENCE  // Distance: 190 RPM: 4100
     };
 }
