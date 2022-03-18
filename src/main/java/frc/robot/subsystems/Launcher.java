@@ -61,6 +61,7 @@ public class Launcher extends SubsystemBase {
     double setPoint = speed * maxRPM;
  
     //_rightPIDController.setReference(setPoint, CANSparkMax.ControlType.kVelocity);
+    //_leftMotor.follow(_rightMotor);
   }
 
   public void start() {
@@ -99,8 +100,8 @@ public class Launcher extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("Turret Speed", _shooter.getLeftEncoder());
-    //System.out.println("Left Encoder Speed: " + getLeftEncoder());
-    // System.out.println("Right Encoder Speed: " + _shooter.getRightEncoder());
+    //SmartDashboard.putNumber("Shooter Speed", _shooter.getLeftEncoder());
+    //System.out.println("Left Shooter Encoder Speed: " + getLeftEncoder());
+    //System.out.println("Right Shooter Encoder Speed: " + _shooter.getRightEncoder());
   }
 }

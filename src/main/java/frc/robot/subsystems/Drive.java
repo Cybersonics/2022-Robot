@@ -196,8 +196,15 @@ public class Drive extends SubsystemBase {
 
     // Set each swerve module, scaling the drive speeds by the maximum speed
     
-	SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
-    //SmartDashboard.putNumber("angleLF", angleFL);
+	//******** */
+	// Uncomment following lines to reset encoders manually
+	//SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
+	//SmartDashboard.putNumber("angleLB", backLeft.getSteerEncoder());
+	//SmartDashboard.putNumber("angleRF", frontRight.getSteerEncoder());
+	//SmartDashboard.putNumber("angleRB", backLeft.getSteerEncoder());
+	
+    
+	//SmartDashboard.putNumber("angleLF", angleFL);
     // SmartDashboard.putNumber("speedLF", speedFL);
     // SmartDashboard.putNumber("SpeedLF/MaxSpeed", speedFL / maxSpeed);
     if (deadStick) {

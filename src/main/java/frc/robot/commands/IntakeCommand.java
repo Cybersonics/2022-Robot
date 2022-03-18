@@ -16,6 +16,7 @@ public class IntakeCommand extends CommandBase {
   private boolean autoRoutine;
   private double _speed;
   private XboxController _xboxController;
+  private double _time_val;
 
   /** Creates a new Intake. */
   public IntakeCommand(Intake intake, XboxController xboxController) {
@@ -27,9 +28,10 @@ public class IntakeCommand extends CommandBase {
   }
 
     /** Creates a new Intake. */
-    public IntakeCommand(Intake intake, double speed) {
+    public IntakeCommand(Intake intake, double speed, double time_val) {
       this._intake = intake;
       this._speed = speed;
+      this._time_val = time_val;
       this.autoRoutine = true;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(_intake);
@@ -65,7 +67,7 @@ public class IntakeCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (autoRoutine){
-      return this._timer.hasElapsed(2.5);
+      return this._timer.hasElapsed(this._time_val);
     }
     else {
       return false;

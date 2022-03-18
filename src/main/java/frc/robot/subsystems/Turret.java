@@ -60,6 +60,8 @@ public class Turret extends SubsystemBase {
   private double _targetYaw;
   private boolean _hasTarget;
 
+  private double _encoderZero;
+
   /** Creates a new Turret. */
   private Turret() {    
     CommandScheduler.getInstance().registerSubsystem(this);
@@ -80,8 +82,8 @@ public class Turret extends SubsystemBase {
   }
 
   public void raiseTurret() {
-    leftHoodServo.setAngle(90);
-    rightHoodServo.setAngle(90);
+    leftHoodServo.setAngle(60);
+    rightHoodServo.setAngle(60);
   }
 
   public void lowerTurret() {
@@ -90,7 +92,7 @@ public class Turret extends SubsystemBase {
   }
 
   public boolean getTurretHoodPosition(){
-    if (leftHoodServo.getAngle()<80) {
+    if (leftHoodServo.getAngle()<50) {
       return true;
     }
     else {
@@ -132,13 +134,35 @@ public class Turret extends SubsystemBase {
 
     // Encoder object created to display position values
     _turretEncoder = _turretMotor.getEncoder();
+    _encoderZero = _turretEncoder.getPosition();
 
   }
 
+  public void resettingEncoder() {
+    _turretEncoder.setPosition(_encoderZero);
+  }
+
+  public void setTurretPosition(double speed, double position) {
+
+    double delta = this.getTurretPosition();
+    //double speed = _turretPIDController.calculate(delta, position);
+    if(position < delta) {
+    this._turretMotor.set(speed);
+    }
+    else {
+      this._turretMotor.set(0);
+    }
+
+  }
+
+  public double getTurretPosition() {
+    return _turretEncoder.getPosition();
+  }
   
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Left Hood Servo", this.leftHoodServo.getAngle());
     SmartDashboard.putNumber("Right Hood Servo", this.rightHoodServo.getAngle());
+    SmartDashboard.putNumber("Turret Encoder Position", this._turretEncoder.getPosition());
   }
 }
