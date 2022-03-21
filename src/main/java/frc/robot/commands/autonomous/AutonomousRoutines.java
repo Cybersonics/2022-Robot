@@ -158,20 +158,21 @@ this._intake = intake;
     public Command getCenterTwoBall(){
         return new SequentialCommandGroup(
             new AutonDriveDistanceCommand(this._drive, 33, 0.4, 0.0, 0.0, false, this._ballVision),
-            new RotateCommand(this._drive, -75, this._navxGyro),
+            new RotateCommand(this._drive, -82, this._navxGyro), //drive, -90, navyGryo
             new ParallelCommandGroup(
                 new IndexerCommand(this._indexer, -1.0, 3.0),
                 new ShooterCommand(this._launcher, 3.0)
             ),
             new AutoIntakeDeploy(this._pneumatics),
             //new RotateCommand(this._drive, -100, this._navxGyro),
+            new AutoVisionCommand(this._targetVision),
             new ParallelCommandGroup(
-                new AutoVisionCommand(this._targetVision),
-                new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.2, 0.0, true, this._ballVision),
+                // new AutoVisionCommand(this._targetVision),
+                new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.14, 0.0, true, this._ballVision),
                 //new AutonDriveDistanceCommand(this._drive, 40, -0.4, 0.1, 0.0, true, this._ballVision),
                 new IntakeCommand(this._intake, 1.0, 7),
                 new IndexerCommand(this._indexer, -1.0, 7),
-                new ShooterCommand(this._launcher, 7)
+                new VisionShooterCommand(this._launcher, 7, this._targetVision)
             )
         );
     }

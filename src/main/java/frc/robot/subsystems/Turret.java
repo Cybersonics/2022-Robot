@@ -129,6 +129,11 @@ public class Turret extends SubsystemBase {
 
     _turretMotor.set(speed);
 
+    //untested and unimplemented code to software limit the turret
+    // if(speed > 0 && this._turretEncoder.getPosition() > 0) {
+    //   _turretMotor.set(0);
+    // }
+
   }
 
   
