@@ -24,7 +24,7 @@ import frc.robot.Constants;
 public class Turret extends SubsystemBase {
 
   public static Turret instance;
-  public CANSparkMax _turretMotor;
+  private CANSparkMax _turretMotor;
   private RelativeEncoder _turretEncoder;
   private Servo leftHoodServo;
   private Servo rightHoodServo;
@@ -134,6 +134,10 @@ public class Turret extends SubsystemBase {
     //   _turretMotor.set(0);
     // }
 
+  }
+
+  public void stopTurretRotation() {
+    _turretMotor.set(0);
   }
 
   

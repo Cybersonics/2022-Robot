@@ -34,7 +34,7 @@ public class Launcher extends SubsystemBase {
      kI = 0.0000001;
      kD = 0.000001; 
      kIz = 0; 
-     kFF = 0.00017;//0.00003; 
+     kFF = 0.00019;//0.00017;//0.00003; 
      kMaxOutput = 1; 
      kMinOutput = -1;
      maxRPM = 5700;

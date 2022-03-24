@@ -31,8 +31,7 @@ public class TargetVision extends SubsystemBase {
     final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(28);
     final double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
     // Angle between horizontal and the camera.
-    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(30);
-
+    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(29.7);//29.5
     public TargetVision() {
         
         this.camera = new PhotonCamera(Constants.targetCamera);

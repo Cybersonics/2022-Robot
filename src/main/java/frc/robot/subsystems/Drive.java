@@ -196,13 +196,6 @@ public class Drive extends SubsystemBase {
 
     // Set each swerve module, scaling the drive speeds by the maximum speed
     
-	//******** */
-	// Uncomment following lines to reset encoders manually
-	//SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
-	//SmartDashboard.putNumber("angleLB", backLeft.getSteerEncoder());
-	//SmartDashboard.putNumber("angleRF", frontRight.getSteerEncoder());
-	//SmartDashboard.putNumber("angleRB", backLeft.getSteerEncoder());
-	
     
 	//SmartDashboard.putNumber("angleLF", angleFL);
     // SmartDashboard.putNumber("speedLF", speedFL);
@@ -270,6 +263,13 @@ public class Drive extends SubsystemBase {
 		backRight.setDriveEncoder(position);
 	}
 
+	public void getSteerEncoderVal(){
+		SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
+		SmartDashboard.putNumber("angleLB", backLeft.getSteerEncoder());
+		SmartDashboard.putNumber("angleRF", frontRight.getSteerEncoder());
+		SmartDashboard.putNumber("angleRB", backLeft.getSteerEncoder());
+	}
+
 	// public static double[] getEncoderVal() {
 	// 	double[] values = new double[] { frontLeft.getAnalogIn(), backLeft.getAnalogIn(), frontRight.getAnalogIn(),
 	// 			backRight.getAnalogIn() };
@@ -279,6 +279,11 @@ public class Drive extends SubsystemBase {
 
   @Override()
   public void periodic() {
+
+		//******** */
+	// Uncomment following line to physically reset encoders position to zero state.
+	//getSteerEncoderVal();
+
 	//SmartDashboard.putNumber("Angle Back Left", backLeft.getSteerEncoder());
     // this.FL_Drive.outputToDashboard();
     // this.FR_Drive.outputToDashboard();

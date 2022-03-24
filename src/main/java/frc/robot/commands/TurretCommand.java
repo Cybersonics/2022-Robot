@@ -50,7 +50,13 @@ public class TurretCommand extends CommandBase {
       this._hasTarget = false;
     }
   
-    this._turret.rotateTurret(() -> this._controller.getRightX(), TURRET_DEADZONE, this._hasTarget, this._targetYaw);
+    if(this._controller.getLeftTriggerAxis() > 0) {
+      this._turret.rotateTurret(() -> this._controller.getLeftTriggerAxis(), TURRET_DEADZONE, this._hasTarget, this._targetYaw);
+    } else if (this._controller.getRightTriggerAxis() > 0) {
+      this._turret.rotateTurret(() -> -(this._controller.getRightTriggerAxis()), TURRET_DEADZONE, this._hasTarget, this._targetYaw);
+    } else {
+      this._turret.stopTurretRotation();
+    }
     
   }
 
