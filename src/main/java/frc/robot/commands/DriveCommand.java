@@ -20,7 +20,7 @@ public class DriveCommand extends CommandBase {
   private NavXGyro _navXGyro;
 
   public static final double OMEGA_SCALE = 1.0 / 45.0;//30
-	public static final double DEADZONE_LSTICK = 0.06;
+	public static final double DEADZONE_LSTICK = 0.07;
 	private static final double DEADZONE_RSTICK = 0.07;
 	private double originHeading = 0.0;
 	private double originCorr;
@@ -62,7 +62,7 @@ public class DriveCommand extends CommandBase {
 
     // double stickForward = this.driveController.getLeftY();
     double stickForward = this.leftStick.getY();
-    //SmartDashboard.putNumber("Controller Forward", stickForward);
+    SmartDashboard.putNumber("Controller Forward", stickForward);
     // double stickStrafe = this.driveController.getLeftX();
     double stickStrafe = this.leftStick.getX();
     //SmartDashboard.putNumber("Controller Strafe", stickStrafe);

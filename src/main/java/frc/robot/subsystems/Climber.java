@@ -17,7 +17,7 @@ public class Climber extends SubsystemBase {
   public CANSparkMax _leftMotor;
   public CANSparkMax _rightMotor;
 
-  public double MAX_SPEED = .7;
+  public double MAX_SPEED = .85;
 
   /** Creates a new Climber. */
   private Climber() {

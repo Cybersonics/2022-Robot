@@ -51,8 +51,8 @@ public class Turret extends SubsystemBase {
   private static final double HOOD_MAX_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MAX_POSITION);
   private static final double HOOD_MIN_PWM = MIN_SERVO_PWM + (SERVO_RANGE * HOOD_MIN_POSITION);
 
-  final double ANGULAR_P = 0.15;
-  final double ANGULAR_I = 0.01;
+  final double ANGULAR_P = 0.08;//0.15
+  final double ANGULAR_I = 0.011;
   final double ANGULAR_D = 0.00;
 
   PIDController _turretPIDController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);

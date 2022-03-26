@@ -58,8 +58,8 @@ public class IndexerCommand extends CommandBase {
     if (autoRoutine) {
       this._indexer.manualControl(this._speed);
     } else {
-      if (!this._indexer.getBallTrip() && Math.abs(_xboxController.getLeftY()) == 0) {
-        this._indexer.manualControl(-.5);
+      if (!this._indexer.getBallTrip() && Math.abs(_xboxController.getLeftY()) < 0.07) {
+        this._indexer.manualControl(-.65);
       } else {
         this._indexer.manualControl(() -> _xboxController.getLeftY());
       }

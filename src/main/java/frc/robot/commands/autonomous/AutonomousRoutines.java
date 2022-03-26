@@ -120,12 +120,13 @@ this._intake = intake;
 
     public Command getCenterRotateFireAndMove(){
         return new SequentialCommandGroup(
-            new AutonDriveDistanceCommand(this._drive, 30, 0.4, 0.0, 0.0, false, this._ballVision),
+            new AutoVisionCommand(this._targetVision),
+            new AutonDriveDistanceCommand(this._drive, 40, 0.4, 0.0, 0.0, false, this._ballVision),
             //new RotateCommand(this._drive, 90, this._navxGyro),
-            new RotateCommand(this._drive, -75, this._navxGyro),
+            new RotateCommand(this._drive, -120, this._navxGyro),
             new ParallelCommandGroup(
                 new IndexerCommand(this._indexer, -1.0, 3.0),
-                new ShooterCommand(this._launcher, 3.0)
+                new VisionShooterCommand(this._launcher, 3.0, this._targetVision)
             ),
             new AutonDriveDistanceCommand(this._drive, 10,0.0, 0.4, 0.0, false, this._ballVision)
         );
@@ -143,6 +144,14 @@ this._intake = intake;
         );
     }
 
+    public Command testRotateMove(){
+        return new SequentialCommandGroup(
+            new AutonDriveDistanceCommand(this._drive, 50, 0.4, 0.0, 0.0, false, this._ballVision, this._navxGyro)
+            //new RotateCommand(this._drive, -60, this._navxGyro),
+            //new AutonDriveDistanceCommand(this._drive, 50, -0.4, 0.0, 0.0, false, this._ballVision, this._navxGyro)
+        );
+    }
+
     public Command getRightRotateFireAndMove(){
         return new SequentialCommandGroup(
             new RotateCommand(this._drive, -70, this._navxGyro),
@@ -157,18 +166,40 @@ this._intake = intake;
 
     public Command getCenterTwoBall(){
         return new SequentialCommandGroup(
-            new AutonDriveDistanceCommand(this._drive, 33, 0.4, 0.0, 0.0, false, this._ballVision),
+            new AutoVisionCommand(this._targetVision),
+            new AutonDriveDistanceCommand(this._drive, 40, 0.4, 0.0, 0.0, false, this._ballVision),
             new RotateCommand(this._drive, -82, this._navxGyro), //drive, -90, navyGryo
             new ParallelCommandGroup(
-                new IndexerCommand(this._indexer, -1.0, 3.0),
-                new ShooterCommand(this._launcher, 3.0)
+                new IndexerCommand(this._indexer, -1.0, 3.0),                
+                new VisionShooterCommand(this._launcher, 3, this._targetVision)
             ),
             new AutoIntakeDeploy(this._pneumatics),
             //new RotateCommand(this._drive, -100, this._navxGyro),
-            new AutoVisionCommand(this._targetVision),
             new ParallelCommandGroup(
                 // new AutoVisionCommand(this._targetVision),
-                new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.14, 0.0, true, this._ballVision),
+                new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.2, 0.0, true, this._ballVision),
+                //new AutonDriveDistanceCommand(this._drive, 40, -0.4, 0.1, 0.0, true, this._ballVision),
+                new IntakeCommand(this._intake, 1.0, 7),
+                new IndexerCommand(this._indexer, -1.0, 7),
+                new VisionShooterCommand(this._launcher, 7, this._targetVision)
+            )
+        );
+    }
+
+    public Command getLeftTwoBall(){
+        return new SequentialCommandGroup(
+            new AutoVisionCommand(this._targetVision),
+            new AutonDriveDistanceCommand(this._drive, 40, 0.4, 0.0, 0.0, false, this._ballVision),
+            new RotateCommand(this._drive, -82, this._navxGyro), //drive, -90, navyGryo
+            new ParallelCommandGroup(
+                new IndexerCommand(this._indexer, -1.0, 3.0),                
+                new VisionShooterCommand(this._launcher, 3, this._targetVision)
+            ),
+            new AutoIntakeDeploy(this._pneumatics),
+            //new RotateCommand(this._drive, -100, this._navxGyro),
+            new ParallelCommandGroup(
+                // new AutoVisionCommand(this._targetVision),
+                new AutonDriveDistanceCommand(this._drive, 40, -0.4, -0.2, 0.0, true, this._ballVision),
                 //new AutonDriveDistanceCommand(this._drive, 40, -0.4, 0.1, 0.0, true, this._ballVision),
                 new IntakeCommand(this._intake, 1.0, 7),
                 new IndexerCommand(this._indexer, -1.0, 7),
