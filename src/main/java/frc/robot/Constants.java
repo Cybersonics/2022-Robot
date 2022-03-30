@@ -72,12 +72,27 @@ public final class Constants {
     public final static double TURRET_CAMERA_HEIGHT = 0.67945;  //this is in meters
     public static final double TARGET_HEIGHT = 2.6416;  //this is in meters
 
-    public final static double[] MIN_REFERENCE = {100, 3300};
-    public final static double[] MAX_REFERENCE = {190, 4350}; //4100
+    public final static double[] MIN_RPM_REFERENCE = {100, 2900};
+    public final static double[] MAX_RPM_REFERENCE = {190, 3800};
     public final static double[][] distanceReference = {
-        MIN_REFERENCE, // Distance: 100 RPM: 3300
-        {130, 3550},   // Distance: 130 RPM: 3450
-        {160, 4050},   // Distance: 160 RPM: 3670
-        MAX_REFERENCE  // Distance: 190 RPM: 4100
+        MIN_RPM_REFERENCE, // Distance: 100 RPM: 2900
+        {115, 3000},   // Distance: 115 RPM: 3000
+        {130, 3050},   // Distance: 130 RPM: 3050
+        {145, 3250},   // Distance: 130 RPM: 3225
+        {160, 3400},   // Distance: 160 RPM: 3400
+        {175, 3600}, // Distance: 175 RPM: 3600
+        MAX_RPM_REFERENCE  // Distance: 190 RPM: 3800
+    };
+
+    public final static double[] MIN_ANGLE_REFERENCE = {100, 0};
+    public final static double[] MAX_ANGLE_REFERENCE = {190, 50}; 
+    public final static double[][] angleReference = {
+        MIN_ANGLE_REFERENCE, // Distance: 100 Angle: 0
+        {115, 7}, // Distance: 115 Angle: 7
+        {130, 15},   // Distance: 130 Angle: 15
+        {145, 15}, // Distance: 145 Angle: 15
+        {160, 35},   // Distance: 160 Angle: 35
+        {175, 40}, // Distance: 175 Angle: 40
+        MAX_ANGLE_REFERENCE  // Distance: 190 Angle: 50
     };
 }

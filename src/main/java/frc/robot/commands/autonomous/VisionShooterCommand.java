@@ -38,7 +38,7 @@ public class VisionShooterCommand extends CommandBase {
   public void execute() {
     double targetDistance = this._targetVision.getRange();
     double test = Units.metersToInches(targetDistance);
-    double rpmReference = Interpolation.getReference(test);
+    double rpmReference = Interpolation.getRPMReference(test);
     this._shooter.calculateReference(rpmReference);
   }
 

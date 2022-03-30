@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.TargetVision;
 
 import frc.robot.Constants;
 
@@ -32,7 +31,7 @@ public class Turret extends SubsystemBase {
 
   public static final double WPILIB_MIN_SERVO_ANGLE = 0.0; //degrees
   public static final double WPILIB_MAX_SERVO_ANGLE = 360.0; //degrees
-  private static final double TIME_TO_SERVO_FULL_EXTENSION = 3.48; //Avg time to move from retract to extend
+  private static final double TIME_TO_SERVO_FULL_EXTENSION = 2.60; //Avg time to move from retract to extend
   private static final double PERCENT_PER_SECOND = 1.00 / TIME_TO_SERVO_FULL_EXTENSION;
   private static final double DEGREES_PER_SECOND = (WPILIB_MAX_SERVO_ANGLE - WPILIB_MIN_SERVO_ANGLE)
       * PERCENT_PER_SECOND;
@@ -71,6 +70,8 @@ public class Turret extends SubsystemBase {
     rightHoodServo = new Servo(1);
     rightHoodServo.setBounds(HOOD_MAX_PWM, CENTER_SERVO_PWM + SERVO_DEADBAND,
         CENTER_SERVO_PWM, CENTER_SERVO_PWM - SERVO_DEADBAND, HOOD_MIN_PWM);
+    // Lower turret to 0 as starting position for Auto
+    lowerTurretAngle();
     setupTurretMotor();
   }
 
@@ -81,14 +82,19 @@ public class Turret extends SubsystemBase {
     return instance;
   }
 
-  public void raiseTurret() {
+  public void raiseTurretAngle() {
     leftHoodServo.setAngle(60);
     rightHoodServo.setAngle(60);
   }
 
-  public void lowerTurret() {
+  public void lowerTurretAngle() {
     leftHoodServo.setAngle(0);
     rightHoodServo.setAngle(0);
+  }
+
+  public void setTurretPosition(double position) {
+    leftHoodServo.setAngle(position);
+    rightHoodServo.setAngle(position);
   }
 
   public void setTurretAngle(double angle) {
@@ -97,7 +103,7 @@ public class Turret extends SubsystemBase {
   }
 
   public boolean getTurretHoodPosition(){
-    if (leftHoodServo.getAngle()<50) {
+    if (leftHoodServo.getAngle()<49) {
       return true;
     }
     else {

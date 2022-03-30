@@ -223,6 +223,7 @@ public class Drive extends SubsystemBase {
     // this.BL_Drive.setAngleAndSpeed(angleLR, speedLR / maxSpeed);
     // this.FR_Drive.setAngleAndSpeed(angleRF, speedRF / maxSpeed);
     // this.BR_Drive.setAngleAndSpeed(angleRR, speedRR / maxSpeed);
+	//getSteerEncoderVal();
   }
 
   private double speed(double val1, double val2) {
@@ -267,7 +268,7 @@ public class Drive extends SubsystemBase {
 		SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
 		SmartDashboard.putNumber("angleLB", backLeft.getSteerEncoder());
 		SmartDashboard.putNumber("angleRF", frontRight.getSteerEncoder());
-		SmartDashboard.putNumber("angleRB", backLeft.getSteerEncoder());
+		SmartDashboard.putNumber("angleRB", backRight.getSteerEncoder());
 	}
 
 	// public static double[] getEncoderVal() {
@@ -282,7 +283,7 @@ public class Drive extends SubsystemBase {
 
 		//******** */
 	// Uncomment following line to physically reset encoders position to zero state.
-	//getSteerEncoderVal();
+	// getSteerEncoderVal();
 
 	//SmartDashboard.putNumber("Angle Back Left", backLeft.getSteerEncoder());
     // this.FL_Drive.outputToDashboard();

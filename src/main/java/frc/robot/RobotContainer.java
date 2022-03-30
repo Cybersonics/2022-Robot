@@ -147,10 +147,10 @@ public class RobotContainer {
     // Set A button
     new JoystickButton(opController, 1).whenPressed(() -> _pneumatics.intakeToggle());
     // set X Button
-    new JoystickButton(opController, 3).whenPressed(() -> _turret.lowerTurret());
+    new JoystickButton(opController, 3).whenPressed(() -> _turret.lowerTurretAngle());
     // Set Y Button
-    new JoystickButton(opController, 4).whenPressed(() -> _turret.raiseTurret());
-    // Set Right operator controller joystick pressed to ntoggle Vision system
+    new JoystickButton(opController, 4).whenPressed(() -> _turret.raiseTurretAngle());
+    // Set Right operator controller joystick pressed to toggle Vision system
     new JoystickButton(opController, 10).whenPressed(() -> _targetVision.cameraLEDToggle());
     
     // Set Y button

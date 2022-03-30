@@ -81,7 +81,7 @@ public class swerveModule extends SubsystemBase {
     steerMotor.config_kI(0, STEER_I, 0);
     steerMotor.config_kD(0, STEER_D, 0);
     steerMotor.config_IntegralZone(0, 100, 0);
-    steerMotor.configAllowableClosedloopError(0, 5, 0);
+    steerMotor.configAllowableClosedloopError(0, 2, 0);
     steerMotor.setNeutralMode(NeutralMode.Brake);
     steerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, STATUS_FRAME_PERIOD, 0);
     steerMotor.setInverted(invertSteer);

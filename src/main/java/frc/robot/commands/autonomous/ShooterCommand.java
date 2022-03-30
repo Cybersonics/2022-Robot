@@ -31,6 +31,7 @@ public class ShooterCommand extends CommandBase {
   private XboxController _controller;
 
   private double rpmReference = 3400;
+  private double angleReference = 0;
 
   /**
    * constructor method
@@ -85,8 +86,11 @@ public class ShooterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {    
-    rpmReference = SmartDashboard.getNumber("RPM Speed", rpmReference);
+    // rpmReference = SmartDashboard.getNumber("RPM Speed", rpmReference);
     SmartDashboard.putNumber("RPM Speed", rpmReference);
+    // angleReference = SmartDashboard.getNumber("Turret Angle", angleReference);
+    SmartDashboard.putNumber("Calc Turret Angle", angleReference);
+    
     if (simple){
       fire();
     }
@@ -95,12 +99,14 @@ public class ShooterCommand extends CommandBase {
         if (this._turret.getTurretHoodPosition()){
           this._shooter.calculatedLaunch(0.75);
         } else {
-          this._shooter.calculatedLaunch(0.5);
+          this._shooter.calculatedLaunch(0.4);
         }
       } else if (this._controller.getLeftBumper()) {
         double targetDistance = this._targetVision.getRange();
         double test = Units.metersToInches(targetDistance);
-        rpmReference = Interpolation.getReference(test);
+        angleReference = Interpolation.getAngleReference(test);        
+        rpmReference = Interpolation.getRPMReference(test);   
+        this._turret.setTurretPosition(angleReference);
         this._shooter.calculateReference(rpmReference);
       } else {
         this._shooter.stop();
