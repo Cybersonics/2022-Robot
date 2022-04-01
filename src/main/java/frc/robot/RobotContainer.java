@@ -92,6 +92,7 @@ public class RobotContainer {
     m_chooser.addOption("Right 3 ball (WIP)", _autonRoutines.getRightThreeBall());
     m_chooser.addOption("testTurretRotate", _autonRoutines.testTurretRotate());
     m_chooser.addOption("testRotateMove", _autonRoutines.testRotateMove());
+    m_chooser.addOption("Right 4 Ball", _autonRoutines.getRightFourBall());
 
     //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
 

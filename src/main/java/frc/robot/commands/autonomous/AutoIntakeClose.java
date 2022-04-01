@@ -5,40 +5,42 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Pneumatics;
+import edu.wpi.first.wpilibj.Timer;
 
-public class TurretPositionCommand extends CommandBase {
+public class AutoIntakeClose extends CommandBase {
+  /** Creates a new AutoIntakeDeploy. */
+  private Pneumatics _pneumatics;
+  private Timer _timer;
 
-  private Turret _turret;
-  private double _position;
-  /** Creates a new TurretPositionCommand. */
-  public TurretPositionCommand(Turret turret, double position) {
-    this._turret = turret;
-    this._position = position;
-
+  public AutoIntakeClose(Pneumatics pnematics) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(turret);
+    this._pneumatics = pnematics;
+    addRequirements(pnematics);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    _timer = new Timer();
+    _timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this._turret.setTurretPosition(-0.8, this._position);
+    this._pneumatics.intakeClose();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) { 
-    this._turret.stopTurretRotation();
+  public void end(boolean interrupted) {
+    this._timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this._position > this._turret.getTurretPosition();
+    return this._timer.hasElapsed(0.5);
   }
 }
