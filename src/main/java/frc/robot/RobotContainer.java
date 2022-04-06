@@ -39,12 +39,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // Subsystems
   //public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
-  public static Drive _drive = Drive.getInstance();
+  public static NavXGyro _gyro = NavXGyro.getInstance();
+  public static Drive _drive = Drive.getInstance(_gyro);
   public static Climber _climber = Climber.getInstance();
   public static Indexer _indexer = Indexer.getInstance();
   public static Intake _intake = Intake.getInstance();
   public static Launcher _launcher = Launcher.getInstance();
-  public static NavXGyro _gyro = NavXGyro.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
   public static TargetVision _targetVision = TargetVision.getInstance();
@@ -81,18 +81,19 @@ public class RobotContainer {
     // Set up auton selector
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
     // m_chooser.addOption("testMove", _autonRoutines.testMove());
-    m_chooser.addOption("testRotate", _autonRoutines.testRotate());
+    //m_chooser.addOption("testRotate", _autonRoutines.testRotate());
     // m_chooser.addOption("testShooter", _autonRoutines.testShooter());
     // m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
-    m_chooser.addOption("testAutoIntakeDeploy", _autonRoutines.testAutoIntakeDeploy());
+    //m_chooser.addOption("testAutoIntakeDeploy", _autonRoutines.testAutoIntakeDeploy());
     m_chooser.addOption("Center Shoot and Move", _autonRoutines.getCenterRotateFireAndMove());
-    m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
-    m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
+    // m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
+    // m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
     m_chooser.addOption("Center 2 ball", _autonRoutines.getCenterTwoBall());
-    m_chooser.addOption("Right 3 ball (WIP)", _autonRoutines.getRightThreeBall());
-    m_chooser.addOption("testTurretRotate", _autonRoutines.testTurretRotate());
-    m_chooser.addOption("testRotateMove", _autonRoutines.testRotateMove());
-    m_chooser.addOption("Right 4 Ball", _autonRoutines.getRightFourBall());
+    // m_chooser.addOption("Right 3 ball (WIP)", _autonRoutines.getRightThreeBall());
+    // m_chooser.addOption("testTurretRotate", _autonRoutines.testTurretRotate());
+    // m_chooser.addOption("testRotateMove", _autonRoutines.testRotateMove());
+    // m_chooser.addOption("Right 4 Ball", _autonRoutines.getRightFourBall());
+    m_chooser.addOption("test Auto Move", _autonRoutines.testAutoMove());
 
     //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
 

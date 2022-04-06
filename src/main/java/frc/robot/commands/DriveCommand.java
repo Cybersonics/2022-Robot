@@ -61,18 +61,18 @@ public class DriveCommand extends CommandBase {
 		//originCorr = _navXGyro.getNavAngle() + originOffset;
 
     // double stickForward = this.driveController.getLeftY();
-    double stickForward = this.leftStick.getY();
+    double stickForward = -this.leftStick.getY();
     SmartDashboard.putNumber("Controller Forward", stickForward);
     // double stickStrafe = this.driveController.getLeftX();
-    double stickStrafe = this.leftStick.getX();
+    double stickStrafe = -this.leftStick.getX();
     //SmartDashboard.putNumber("Controller Strafe", stickStrafe);
     // double stickOmega = (this.driveController.getRightX());
-    double stickOmega = this.rightStick.getX();
+    double stickOmega = -this.rightStick.getX();
     //SmartDashboard.putNumber("Controller Omega", stickOmega);
 
-		double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(-stickStrafe);
+		double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(stickStrafe);
 		double forward = Math.pow(Math.abs(stickForward), leftPow) * Math.signum(stickForward);
-    double omega = Math.pow(Math.abs(stickOmega), rightPow) * Math.signum(-stickOmega) * OMEGA_SCALE;
+    double omega = Math.pow(Math.abs(stickOmega), rightPow) * Math.signum(stickOmega) * OMEGA_SCALE;
     
     if (Math.abs(strafe) < DEADZONE_LSTICK)
       strafe = 0.0;
@@ -94,8 +94,11 @@ public class DriveCommand extends CommandBase {
         // final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
       final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavAngle());
       //final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavHeading());
-      final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
-      strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
+      // final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
+      // strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
+      // forward = temp;
+      final double temp = forward * Math.cos(originCorrection) + strafe * Math.sin(originCorrection);
+      strafe = strafe * Math.cos(originCorrection) - forward * Math.sin(originCorrection);
       forward = temp;
     }
   

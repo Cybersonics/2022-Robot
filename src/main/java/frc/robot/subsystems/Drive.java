@@ -8,6 +8,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,6 +28,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 public class Drive extends SubsystemBase {
 
   private static Drive instance;
+
+  public static final double kMaxSpeed = 3.0; // 3 meters per second
+  public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
 	private static swerveModule frontLeft;
 	private static swerveModule backLeft;
@@ -41,8 +51,9 @@ public class Drive extends SubsystemBase {
 
 	public static final double OMEGA_SCALE = 1.0 / 30.0;
 
-	private final boolean invertDrive = false;
+	private final boolean invertDrive = true;//false;
 	private final boolean invertSteer = true;
+	private NavXGyro _gyro;
 
   private ShuffleboardTab driveTab = Shuffleboard.getTab("DriveTab");
 
@@ -61,10 +72,16 @@ public class Drive extends SubsystemBase {
 	private NetworkTableEntry rbSetAngle = driveTab.addPersistent("RBack Set Angle", 0)
 			.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -180, "max", 180, "center", 0))
 			.withPosition(4, 2).withSize(3, 1).getEntry();
+
+	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics,
+		new Rotation2d(0));
+	  
 	
 	//swerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer)
 
-	private Drive() {
+	private Drive(NavXGyro gyro) {
+
+		this._gyro = gyro;
 
 		frontLeft = new swerveModule(Constants.FL_Steer_Id, Constants.FL_Drive_Id, invertDrive, invertSteer);
 
@@ -83,9 +100,17 @@ public class Drive extends SubsystemBase {
   //   }
   //   return instance;
   // }
-	public static Drive getInstance() {
+  public Pose2d getPose() {
+	return odometer.getPoseMeters();
+}
+
+public void resetOdometry(Pose2d pose) {
+	odometer.resetPosition(pose, this._gyro.getRotation2d());
+}
+
+public static Drive getInstance(NavXGyro gyro) {
 		if (instance == null) {
-			instance = new Drive();
+			instance = new Drive(gyro);
 		}
 
 		return instance;
@@ -127,10 +152,10 @@ public class Drive extends SubsystemBase {
     double omegaL2 = omega * (WHEEL_BASE_LENGTH / 2.0);
     //SmartDashboard.putNumber("OmegaL2", omegaL2);
     double omegaW2 = omega * (WHEEL_BASE_WIDTH / 2.0);
-    //SmartDashboard.putNumber("OmegaW2", omegaW2);
+    SmartDashboard.putNumber("OmegaW2", omegaW2);
 
-    //SmartDashboard.putNumber("Forwrad", forward);
-    //SmartDashboard.putNumber("Strafe", strafe);
+    SmartDashboard.putNumber("Forwrad", forward);
+    SmartDashboard.putNumber("Strafe", strafe);
 
     // Compute the constants used later for calculating speeds and angles
     double A = strafe - omegaL2;
@@ -139,10 +164,14 @@ public class Drive extends SubsystemBase {
     double D = forward + omegaW2;
 
     // Compute the drive motor speeds
-    double speedFL = speed(B, D);
-    double speedBL = speed(A, D);
-    double speedFR = speed(B, C);
-    double speedBR = speed(A, C);
+    // double speedFL = speed(B, D);
+    // double speedBL = speed(A, D);
+    // double speedFR = speed(B, C);
+    // double speedBR = speed(A, C);
+	double speedFL = speed(B, C);
+    double speedBL = speed(A, C);
+    double speedFR = speed(B, D);
+    double speedBR = speed(A, D);
 
     /*
 		 * ... and angles for the steering motors Set the drive to face straight ahead
@@ -180,15 +209,14 @@ public class Drive extends SubsystemBase {
     // They are at 90 degrees to the front of the robot.
     // Subtract and add 90 degrees to steering calculation to offset for initial
     // position/calibration of drives.
-		double angleFL = angle(B, D) + Constants.FL_STEER_OFFSET + lfOffset;
-		double angleBL = angle(A, D) + Constants.BL_STEER_OFFSET + lbOffset;
-		double angleFR = angle(B, C) + Constants.FR_STEER_OFFSET + rfOffset;
-		double angleBR = angle(A, C) + Constants.BR_STEER_OFFSET + rbOffset;
-
-    // double angleFL = angle(B, D);// - 90;
-    // double angleBL = angle(A, D);// + 90;
-    // double angleFR = angle(B, C) + 20;// - 90;
-    // double angleBR = angle(A, C);// + 90;
+		double angleFL = angle(B, C)+ lfOffset;// + Constants.FL_STEER_OFFSET;//+ lfOffset;
+		double angleBL = angle(A, C)+ lbOffset;// + Constants.BL_STEER_OFFSET;// + lbOffset;
+		double angleFR = angle(B, D)+ rfOffset;// + Constants.FR_STEER_OFFSET;// + rfOffset;
+		double angleBR = angle(A, D)+ rbOffset;// + Constants.BR_STEER_OFFSET;// + rbOffset;
+		// double angleFL = angle(B, D) + Constants.FL_STEER_OFFSET + lfOffset;
+		// double angleBL = angle(A, D) + Constants.BL_STEER_OFFSET + lbOffset;
+		// double angleFR = angle(B, C) + Constants.FR_STEER_OFFSET + rfOffset;
+		// double angleBR = angle(A, C) + Constants.BR_STEER_OFFSET + rbOffset;
 
     // Compute the maximum speed so that we can scale all the speeds to the range
     // [0.0, 1.0]
@@ -196,9 +224,15 @@ public class Drive extends SubsystemBase {
 
     // Set each swerve module, scaling the drive speeds by the maximum speed
     
-    
-	//SmartDashboard.putNumber("angleLF", angleFL);
-    // SmartDashboard.putNumber("speedLF", speedFL);
+	SmartDashboard.putNumber("angleLF", angleFL);
+    SmartDashboard.putNumber("speedLF", speedFL);
+    SmartDashboard.putNumber("CurAngle LF", frontLeft.getSteerEncDeg());
+    // SmartDashboard.putNumber("angleRF", angleFR);
+    // SmartDashboard.putNumber("speedRF", speedFR);
+    // SmartDashboard.putNumber("angleLR", angleBL);
+    // SmartDashboard.putNumber("speedLR", speedBL);
+    // SmartDashboard.putNumber("angleRR", angleBR);
+    // SmartDashboard.putNumber("speedRR", speedBR);
     // SmartDashboard.putNumber("SpeedLF/MaxSpeed", speedFL / maxSpeed);
     if (deadStick) {
 
@@ -281,6 +315,10 @@ public class Drive extends SubsystemBase {
   @Override()
   public void periodic() {
 
+	odometer.update(this._gyro.getRotation2d(), frontLeft.getState(), frontRight.getState(), backLeft.getState(),
+	backRight.getState());
+	SmartDashboard.putNumber("Robot Heading", this._gyro.getHeading());
+	SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		//******** */
 	// Uncomment following line to physically reset encoders position to zero state.
 	// getSteerEncoderVal();
@@ -291,4 +329,26 @@ public class Drive extends SubsystemBase {
     // this.BR_Drive.outputToDashboard();
     // this.BL_Drive.outputToDashboard();
   }
+
+  public void stopModules() {
+	frontLeft.stop();
+	frontRight.stop();
+	backLeft.stop();
+	backRight.stop();
+}
+
+public void disableRamping(){
+	frontLeft.driveMotorRamp(false);
+	frontRight.driveMotorRamp(false);
+	backLeft.driveMotorRamp(false);
+	backRight.driveMotorRamp(false);
+}
+
+public void setModuleStates(SwerveModuleState[] desiredStates) {
+	SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond/2);
+	frontLeft.setDesiredState(desiredStates[0]);
+	frontRight.setDesiredState(desiredStates[1]);
+	backLeft.setDesiredState(desiredStates[2]);
+	backRight.setDesiredState(desiredStates[3]);
+}
 }

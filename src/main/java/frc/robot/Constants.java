@@ -3,6 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -95,4 +99,63 @@ public final class Constants {
         {175, 40}, // Distance: 175 Angle: 40
         MAX_ANGLE_REFERENCE  // Distance: 190 Angle: 50
     };
+    public static final class ModuleConstants {
+        public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
+        public static final double kDriveMotorGearRatio = 1 / 6.923;
+        public static final double kTurningMotorGearRatio = 1 / 1024;
+        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
+        public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
+        public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
+        public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
+        public static final double kPTurning = 0.5;
+    }
+
+    public static final double kTrackWidth = Units.inchesToMeters(22);
+    // Distance between right and left wheels
+    public static final double kWheelBase = Units.inchesToMeters(24);
+    // Distance between front and back wheels
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        //     new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        //     new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+        //     new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+        //     new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 6;//Orig 5
+    public static final double kPhysicalMaxAngularSpeedRadiansPerSecond =  2 * Math.PI;//2*Math.PI;//orig 2*2*Math.PI
+
+    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
+    public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
+            kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+    public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
+    public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2;
+        public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 5;//10;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;//orig 3
+        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;// 2 //Orig 4
+        public static final double kPXController = 5;//8;//Orig 1.5
+        public static final double kPYController = 5;//8;//Orig 1.5
+        public static final double kPThetaController = 3;//5;//0.5;//Orig 3
+
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
+                new TrapezoidProfile.Constraints(
+                        kMaxAngularSpeedRadiansPerSecond,
+                        kMaxAngularAccelerationRadiansPerSecondSquared);
+        public static final double kGoToPointLinearP = 0;
+        public static final double kGoToPointLinearF = 0.5;
+        public static final double kGoToPointAngularP = 0;
+        public static final double kGoToPointAngularF = 0;
+
+        public static final double maxTrajectoryOverrunSeconds = 3;
+        public static final double kMaxDistanceMetersError = 0.1;
+        public static final double kMaxAngleDegreesError = 5;
+
+
+    }
+
 }

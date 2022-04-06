@@ -40,7 +40,7 @@ public class AutonDriveDistanceCommand extends CommandBase {
     public AutonDriveDistanceCommand(Drive drive, double distance, double forward, double strafe, double rotation, boolean enableVision, BallVision ballVision) {
       this._drive = drive;
 
-      this._distance = distance * Constants.ROTATION_PER_INCH;
+      this._distance = distance;// * Constants.ROTATION_PER_INCH;
       this._enableVision = enableVision;
       this._ballVision = ballVision;
       this._forward = forward;

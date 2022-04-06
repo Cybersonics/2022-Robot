@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 
 public class NavXGyro extends SubsystemBase { 
@@ -61,5 +62,17 @@ public class NavXGyro extends SubsystemBase {
 
   public double getZeroAngle(){
     return zeroAngle;
+  }
+
+  public Rotation2d getNavXRotation2D(){
+    return Rotation2d.fromDegrees(navX.getAngle());
+  }
+
+  public double getHeading() {
+    return Math.IEEEremainder(-getNavAngle(), 360);
+  }
+
+  public Rotation2d getRotation2d() {
+    return Rotation2d.fromDegrees(getHeading());
   }
 }
