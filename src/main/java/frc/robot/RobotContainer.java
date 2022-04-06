@@ -94,6 +94,8 @@ public class RobotContainer {
     // m_chooser.addOption("testRotateMove", _autonRoutines.testRotateMove());
     // m_chooser.addOption("Right 4 Ball", _autonRoutines.getRightFourBall());
     m_chooser.addOption("test Auto Move", _autonRoutines.testAutoMove());
+    m_chooser.addOption("Right 2 Ball Auto", _autonRoutines.RightPathPlanner2Ball());
+    m_chooser.addOption("Test PPlanner", _autonRoutines.testPathPlanner());
 
     //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
 

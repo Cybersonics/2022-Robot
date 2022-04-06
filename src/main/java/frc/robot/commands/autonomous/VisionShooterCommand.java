@@ -28,7 +28,7 @@ public class VisionShooterCommand extends CommandBase {
     _targetVision = targetVision;
     _turret = turret;
     this._autoTimeVal = autoTimeVal;
-    addRequirements(shooter, targetVision);
+    addRequirements(shooter, targetVision, turret);
   }
 
   // Called when the command is initially scheduled.
@@ -51,12 +51,16 @@ public class VisionShooterCommand extends CommandBase {
       this._turret.setTurretPosition(angleReference);
       this._shooter.calculateReference(rpmReference);
     }
+    else {
+      this._turret.stopTurretRotation();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     _shooter.stop();
+    this._turret.stopTurretRotation();
     this._timer.stop();
   }
 

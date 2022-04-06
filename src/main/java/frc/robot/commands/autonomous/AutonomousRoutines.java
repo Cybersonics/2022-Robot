@@ -36,6 +36,10 @@ import frc.robot.Constants.AutoConstants;
 import java.util.List;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 public class AutonomousRoutines {
     private Drive _drive;
     private Launcher _launcher;
@@ -311,14 +315,25 @@ public class AutonomousRoutines {
                .setKinematics(Constants.kDriveKinematics);
 
        // 2. Generate trajectory
-       Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+       Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(
            new Pose2d(0, 0, new Rotation2d(0)),
 
            List.of(
            new Translation2d(-.3,-.05),
            new Translation2d(-.5,-.1)),
-           new Pose2d(-2, 0, Rotation2d.fromDegrees(180)),
+           new Pose2d(-1.2, 0.0, Rotation2d.fromDegrees(180)),
            trajectoryConfig);
+
+        Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(
+                //_drive.getPose(),
+               
+                new Pose2d(-1.2, 0.0, new Rotation2d(Math.PI)),
+                List.of(
+                new Translation2d(-0.2,0.0),
+                new Translation2d(-0.5,-0.05)),
+                new Pose2d(-2.2, 0.05, Rotation2d.fromDegrees(180)),
+                trajectoryConfig);
+     
 
            // 3. Define PID controllers for tracking trajectory
            PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
@@ -328,8 +343,8 @@ public class AutonomousRoutines {
            thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
            // 4. Construct command to follow trajectory
-           SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-               trajectory,
+        SwerveControllerCommand swerveControllerCommand1 = new SwerveControllerCommand(
+               trajectory1,
                //swerveSubsystem::getPose,
                _drive::getPose,
                Constants.kDriveKinematics,
@@ -339,25 +354,38 @@ public class AutonomousRoutines {
                _drive::setModuleStates,
                _drive);
 
+        SwerveControllerCommand swerveControllerCommand2 = new SwerveControllerCommand(
+                trajectory2,
+                //swerveSubsystem::getPose,
+                _drive::getPose,
+                Constants.kDriveKinematics,
+                xController,
+                yController,
+                thetaController,
+                _drive::setModuleStates,
+                _drive);
+
            // 5. Add some init and wrap-up, and return everything
 
-           return new SequentialCommandGroup(
+        return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new AutoVisionCommand(this._targetVision),
-                        new TurretPositionCommand(this._turret, -87),
+                        new TurretPositionCommand(this._turret, -45),//-87
                         new AutoIntakeDeploy(this._pneumatics),
-                        new InstantCommand(() -> _drive.resetOdometry(trajectory.getInitialPose()))
+                        new InstantCommand(() -> _drive.resetOdometry(trajectory1.getInitialPose()))
                 ),
 
                 new ParallelCommandGroup(
-                        swerveControllerCommand, 
                         new IntakeCommand(this._intake, 1.0, 3.5),
-                        new IndexerCommand(this._indexer, -0.3, 4)),
                         new SequentialCommandGroup(
-                              
-                                new InstantCommand(() -> _drive.stopModules())   
-                        )
-                );
+                                swerveControllerCommand1,
+                                swerveControllerCommand2, 
+                                new InstantCommand(() -> _drive.stopModules()),
+                        
+                        new IndexerCommand(this._indexer, -0.3, 4)),
+                        new VisionShooterCommand(this._launcher, 7, this._targetVision, this._turret)
+                )
+        );
 
                 // return new SequentialCommandGroup(
                 
@@ -365,6 +393,78 @@ public class AutonomousRoutines {
                 //         swerveControllerCommand,
                 //         new InstantCommand(() -> _drive.stopModules()));
         
+
+
+   }
+
+   public Command testPathPlanner(){
+        // 1. Create trajectory settings
+       TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+           AutoConstants.kMaxSpeedMetersPerSecond,
+           AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+               .setKinematics(Constants.kDriveKinematics);
+
+        // 3. Define PID controllers for tracking trajectory
+        PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+        PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+        ProfiledPIDController thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+
+       // 2. Generate trajectory
+       PathPlannerTrajectory testPath = PathPlanner.loadPath("Test Path", 4, 3);
+       PathPlannerTrajectory testPath2 = PathPlanner.loadPath("Test Path 02", 4, 3);
+
+       PPSwerveControllerCommand command = new PPSwerveControllerCommand(
+        testPath,
+        //swerveSubsystem::getPose,
+        _drive::getPose,
+        Constants.kDriveKinematics,
+        xController,
+        yController,
+        thetaController,
+        _drive::setModuleStates,
+        _drive);
+
+
+       PPSwerveControllerCommand command2 = new PPSwerveControllerCommand(
+        testPath2,
+        //swerveSubsystem::getPose,
+        _drive::getPose,
+        Constants.kDriveKinematics,
+        xController,
+        yController,
+        thetaController,
+        _drive::setModuleStates,
+        _drive);
+
+        return new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                        new AutoVisionCommand(this._targetVision),
+                        new TurretPositionCommand(this._turret, -63),//-87
+                        new AutoIntakeDeploy(this._pneumatics),
+                        new InstantCommand(() -> _drive.resetOdometry(testPath.getInitialPose()))
+                ),
+                new ParallelCommandGroup(
+                        new IntakeCommand(this._intake, 1.0, 3.5),
+                        new SequentialCommandGroup(
+                                command,
+                                new InstantCommand(() -> _drive.stopModules()))
+                ),
+                new ParallelCommandGroup(
+                        new VisionShooterCommand(this._launcher, 4, this._targetVision, this._turret),  
+                        new IndexerCommand(this._indexer, -0.7, 4)    
+                ),
+
+                new ParallelCommandGroup(
+                        new IntakeCommand(this._intake, 1.0, 3.5),
+                        new SequentialCommandGroup(
+                                command2,
+                                new InstantCommand(() -> _drive.stopModules()))
+                )
+                        
+        );
 
 
    }
