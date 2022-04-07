@@ -81,10 +81,10 @@ public final class Constants {
     public final static double[][] distanceReference = {
         MIN_RPM_REFERENCE, // Distance: 100 RPM: 2900
         {115, 3000},   // Distance: 115 RPM: 3000
-        {130, 3050},   // Distance: 130 RPM: 3050
+        {130, 3100},   // Distance: 130 RPM: 3050
         {145, 3250},   // Distance: 130 RPM: 3225
         {160, 3400},   // Distance: 160 RPM: 3400
-        {175, 3600}, // Distance: 175 RPM: 3600
+        {175, 3650}, // Distance: 175 RPM: 3600
         MAX_RPM_REFERENCE  // Distance: 190 RPM: 3800
     };
 
