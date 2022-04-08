@@ -526,4 +526,81 @@ public class AutonomousRoutines {
 
    }
 
+   public Command SlimMonkey4Ball(){
+        // 1. Create trajectory settings
+       TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+           AutoConstants.kMaxSpeedMetersPerSecond,
+           AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+               .setKinematics(Constants.kDriveKinematics);
+
+        // 3. Define PID controllers for tracking trajectory
+        PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+        PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+        ProfiledPIDController thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+
+       // 2. Generate trajectory
+       PathPlannerTrajectory testPath = PathPlanner.loadPath("Slim Monkey", 4, 3);
+       PathPlannerTrajectory testPath2 = PathPlanner.loadPath("Slim Monkey2", 4, 3);
+
+       PPSwerveControllerCommand command = new PPSwerveControllerCommand(
+        testPath,
+        //swerveSubsystem::getPose,
+        _drive::getPose,
+        Constants.kDriveKinematics,
+        xController,
+        yController,
+        thetaController,
+        _drive::setModuleStates,
+        _drive);
+
+
+       PPSwerveControllerCommand command2 = new PPSwerveControllerCommand(
+        testPath2,
+        //swerveSubsystem::getPose,
+        _drive::getPose,
+        Constants.kDriveKinematics,
+        xController,
+        yController,
+        thetaController,
+        _drive::setModuleStates,
+        _drive);
+
+        return new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                        new AutoVisionCommand(this._targetVision),
+                        new TurretPositionCommand(this._turret, -100),//-87
+                        new AutoIntakeDeploy(this._pneumatics),
+                        new InstantCommand(() -> _drive.resetOdometry(testPath.getInitialPose()))
+                ),
+                new ParallelCommandGroup(
+                        new IntakeCommand(this._intake, 1.0, 3.5),
+                        new SequentialCommandGroup(
+                                command,
+                                new InstantCommand(() -> _drive.stopModules()))
+                ),
+                new ParallelCommandGroup(
+                        new VisionShooterCommand(this._launcher, 4, this._targetVision, this._turret),  
+                        new IndexerCommand(this._indexer, -0.7, 4)    
+                ),
+
+                new ParallelCommandGroup(
+                        new IntakeCommand(this._intake, 1.0, 3.5),
+                        new SequentialCommandGroup(
+                                new TurretPositionCommand(this._turret, -125),//-83
+                                command2,
+                                new InstantCommand(() -> _drive.stopModules()))
+                ),
+                new ParallelCommandGroup(
+                        new VisionShooterCommand(this._launcher, 4, this._targetVision, this._turret),  
+                        new IndexerCommand(this._indexer, -0.7, 4)    
+                )
+                        
+        );
+
+
+   }
+
 }
