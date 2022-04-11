@@ -66,6 +66,8 @@ public class swerveModule extends SubsystemBase {
 
   public double encoderCountPerRotation = 1024;
 
+  private boolean _driveCorrect;
+
   public swerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer) {
 
     //Create and configure a new Drive motor
@@ -74,6 +76,8 @@ public class swerveModule extends SubsystemBase {
 		driveMotor.setInverted(invertDrive);
 		driveMotor.setOpenLoopRampRate(RAMP_RATE);
 		driveMotor.setIdleMode(IdleMode.kCoast); //changed to break at comp
+    driveMotor.setSmartCurrentLimit(55);
+ 
 
     //Create and configure an analog input on a roborio port
     //analogIn = new AnalogInput(analogNum);
@@ -97,12 +101,15 @@ public class swerveModule extends SubsystemBase {
     driveMotorEncoder = driveMotor.getEncoder();
     driveMotorEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderRot2Meter);
     driveMotorEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderRPM2MeterPerSec);
+    driveMotor.burnFlash();
     resetEncoders();
     //driveMotorEncoder.setPosition(0);
 
   }
    
-  public void setSwerve(double angle, double speed) {
+  public void setSwerve(double angle, double speed, boolean driveCorrect) {
+
+    this._driveCorrect = driveCorrect;
     
     //double currentAngle = getAnalogIn() % 360.0; // Use for RoboRio PID
     //double currentSteerPosition = getSteerMotorEncoder();
@@ -129,9 +136,11 @@ public class swerveModule extends SubsystemBase {
     // instead and
     // only rotate by the complement
     //if (Math.abs(speed) <= MAX_SPEED){
-      if (Math.abs(deltaDegrees) > 90.0) {
-      	deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
-      	speed = -speed;
+      if (!this._driveCorrect){
+        if (Math.abs(deltaDegrees) > 90.0) {
+          deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
+          speed = -speed;
+        }
       }
 	  //}
     //Add change in position to current position
@@ -222,7 +231,7 @@ public class swerveModule extends SubsystemBase {
     state = SwerveModuleState.optimize(state, getState().angle);
     double driveMotorSpeed = state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond;
     double steerMotorAngle = state.angle.getDegrees();
-    setSwerve(steerMotorAngle, driveMotorSpeed);
+    setSwerve(steerMotorAngle, driveMotorSpeed, false);
 
   // driveMotor.set(state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
   // turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));

@@ -81,6 +81,7 @@ public class DriveCommand extends CommandBase {
     if (Math.abs(omega) < DEADZONE_RSTICK * OMEGA_SCALE)
       omega = 0.0;
     boolean stickFieldCentric = leftStick.getTrigger();
+    boolean driveCorrect = rightStick.getTrigger();
 
     if (!stickFieldCentric) {
         // When the Left Joystick trigger is not pressed, The robot is in Field Centric
@@ -114,7 +115,7 @@ public class DriveCommand extends CommandBase {
       // SmartDashboard.putNumber("Rotation Done", omega);
 
 
-    this._drive.processInput(forward, strafe, omega, deadStick);
+    this._drive.processInput(forward, strafe, omega, deadStick, driveCorrect);
 
     // this._drive.processInput(
     // () -> 0.0,

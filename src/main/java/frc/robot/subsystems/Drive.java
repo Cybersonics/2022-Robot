@@ -54,6 +54,7 @@ public class Drive extends SubsystemBase {
 	private final boolean invertDrive = true;//false;
 	private final boolean invertSteer = true;
 	private NavXGyro _gyro;
+	private boolean _driveCorrect;
 
   private ShuffleboardTab driveTab = Shuffleboard.getTab("DriveTab");
 
@@ -148,7 +149,9 @@ public static Drive getInstance(NavXGyro gyro) {
 		backRight.setDriveSpeed(speed);
 	}
 
-  public void processInput(double forward, double strafe, double omega, boolean deadStick) {
+  public void processInput(double forward, double strafe, double omega, boolean deadStick, boolean driveCorrect) {
+
+	this._driveCorrect = driveCorrect;
     double omegaL2 = omega * (WHEEL_BASE_LENGTH / 2.0);
     //SmartDashboard.putNumber("OmegaL2", omegaL2);
     double omegaW2 = omega * (WHEEL_BASE_WIDTH / 2.0);
@@ -226,13 +229,16 @@ public static Drive getInstance(NavXGyro gyro) {
     
 	SmartDashboard.putNumber("angleLF", angleFL);
     SmartDashboard.putNumber("speedLF", speedFL);
-    SmartDashboard.putNumber("CurAngle LF", frontLeft.getSteerEncDeg());
+    SmartDashboard.putNumber("CurAngle FL", frontLeft.getSteerEncDeg());
     // SmartDashboard.putNumber("angleRF", angleFR);
     // SmartDashboard.putNumber("speedRF", speedFR);
+	// SmartDashboard.putNumber("CurAngle FR", frontRight.getSteerEncDeg());
     // SmartDashboard.putNumber("angleLR", angleBL);
     // SmartDashboard.putNumber("speedLR", speedBL);
+	// SmartDashboard.putNumber("CurAngle BL", backLeft.getSteerEncDeg());
     // SmartDashboard.putNumber("angleRR", angleBR);
     // SmartDashboard.putNumber("speedRR", speedBR);
+	// SmartDashboard.putNumber("CurAngle BR", backRight.getSteerEncDeg());
     // SmartDashboard.putNumber("SpeedLF/MaxSpeed", speedFL / maxSpeed);
     if (deadStick) {
 
@@ -248,10 +254,10 @@ public static Drive getInstance(NavXGyro gyro) {
 		} else {
 
 			// Set each swerve module, scaling the drive speeds by the maximum speed
-			frontLeft.setSwerve(angleFL, speedFL / maxSpeed);
-			backLeft.setSwerve(angleBL, speedBL / maxSpeed);
-			frontRight.setSwerve(angleFR, speedFR / maxSpeed);
-			backRight.setSwerve(angleBR, speedBR / maxSpeed);
+			frontLeft.setSwerve(angleFL, speedFL / maxSpeed, this._driveCorrect);
+			backLeft.setSwerve(angleBL, speedBL / maxSpeed, this._driveCorrect);
+			frontRight.setSwerve(angleFR, speedFR / maxSpeed, this._driveCorrect);
+			backRight.setSwerve(angleBR, speedBR / maxSpeed, this._driveCorrect);
 		}
     // this.FL_Drive.setAngleAndSpeed(angleLF, speedLF / maxSpeed);
     // this.BL_Drive.setAngleAndSpeed(angleLR, speedLR / maxSpeed);

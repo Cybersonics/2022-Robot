@@ -62,12 +62,12 @@ public class RotateCommand extends CommandBase {
       // if (this._degOffset > this._navStart){
       //if (this._degOffset < this._navZero){
       if (this._rotationDirection){
-        this._drive.processInput(0.0, 0.0, 0.3/30.0, false);
+        this._drive.processInput(0.0, 0.0, 0.3/30.0, false, false);
         // System.out.println("Curent: " + currentRotation);
         //this._rotationDirection = true;
       }
       else {
-        this._drive.processInput(0.0, 0.0, -0.3/30.0, false);
+        this._drive.processInput(0.0, 0.0, -0.3/30.0, false, false);
         //System.out.println("Curent: " + currentRotation);
         //this._rotationDirection = false;
       }
@@ -78,7 +78,7 @@ public class RotateCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
       //_timer.stop();
-      this._drive.processInput(0.0, 0.0, 0.0, false);
+      this._drive.processInput(0.0, 0.0, 0.0, false, false);
 
     }
   

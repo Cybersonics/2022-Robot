@@ -95,7 +95,7 @@ public class AutonDriveDistanceCommand extends CommandBase {
          + "\t NavXGryo Angle: " + _navXGyro.getNavAngle());
       }
       
-      this._drive.processInput(this._forward, this._strafe, this._rotation, false);
+      this._drive.processInput(this._forward, this._strafe, this._rotation, false, false);
  
       // System.out.println("Curent: " + currentRotation);
     }
@@ -104,7 +104,7 @@ public class AutonDriveDistanceCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
       // _timer.stop();
-      this._drive.processInput(0 ,0, 0, false);
+      this._drive.processInput(0 ,0, 0, false, false);
       this._drive.setDriveEncodersPosition(0);
     }
   
