@@ -8,19 +8,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.utility.DriveLocation;
-import frc.robot.subsystems.swerveModule;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -31,98 +29,8 @@ public class Drive extends SubsystemBase {
 
   private static Drive instance;
 
-  // private final double robotWidth;
-  // private final double robotLength;
-
-  // private SwerveDrive FL_Drive;
-  // private SwerveDrive FR_Drive;
-  // private SwerveDrive BL_Drive;
-  // private SwerveDrive BR_Drive;
-
-  // private static final double STEER_P = .5, STEER_I = 0.0, STEER_D = 0.0;
-  // private static final int STATUS_FRAME_PERIOD = 20;
-
-  // private static final double ENCODER_COUNT = 1024.0;
-
-  // /**
-  //  * Constructor to create class responsible for converting joystick interaction
-  //  * to output on drives.
-  //  * 
-  //  * @param width  width of the robot in inches
-  //  * @param length length of the robot in inches
-  //  */
-  // private Drive(double width, double length) {
-  //   this.robotWidth = width;
-  //   this.robotLength = length;
-
-  //   this.FL_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.FrontLeft, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.FL_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.FL_Steer_Id, true))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-
-  //   this.FR_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.FrontRight, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.FR_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.FR_Steer_Id, false))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-
-  //   this.BL_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.BackLeft, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.BL_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.BL_Steer_Id, false))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-
-  //   this.BR_Drive = new SwerveDrive.SwerveDriveBuilder(DriveLocation.BackRight, 4.0)
-  //       .DriveMotor(buildDriveMotor(Constants.BR_Drive_Id, true))
-  //       .SteerMotor(buildSteerMotor(Constants.BR_Steer_Id, true))
-  //       .Encoder(null, ENCODER_COUNT)
-  //       .Build();
-  // }
-
-  // public void resetDriveEncoders() {
-  //   this.FL_Drive.resetDriveEncoders();
-  //   this.FR_Drive.resetDriveEncoders();
-  //   this.BL_Drive.resetDriveEncoders();
-  //   this.BR_Drive.resetDriveEncoders();
-  // }
-
-  // private CANSparkMax buildDriveMotor(int driveId, boolean invert) {
-  //   var drive = new CANSparkMax(driveId, MotorType.kBrushless);
-  //   drive.restoreFactoryDefaults();
-  //   drive.setIdleMode(IdleMode.kBrake);
-  //   drive.setOpenLoopRampRate(0.125);
-  //   drive.setSmartCurrentLimit(60);
-  //   drive.setInverted(invert);
-
-  //   return drive;
-  // }
-
-  // private TalonSRX buildSteerMotor(int steerId, boolean invert) {
-  //   var steer = new TalonSRX(steerId);
-  //   steer.configFactoryDefault();
-  //   steer.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
-  //   steer.config_kP(0, STEER_P, 0);
-  //   steer.config_kI(0, STEER_I, 0);
-  //   steer.config_kD(0, STEER_D, 0);
-  //   steer.config_IntegralZone(0, 100, 0);
-  //   steer.configAllowableClosedloopError(0, 50, 0);
-  //   steer.setNeutralMode(NeutralMode.Brake);
-  //   steer.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, STATUS_FRAME_PERIOD, 0);
-  //   steer.setInverted(invert);
-  //   steer.setSensorPhase(false);
-
-  //   return steer;
-  // }
-
-  // // Public Methods
-  // public static Drive getInstance(double width, double length) {
-  //   if (instance == null) {
-  //     instance = new Drive(width, length);
-  //   }
-  //   return instance;
-  // }
-
+  public static final double kMaxSpeed = 3.0; // 3 meters per second
+  public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
 	private static swerveModule frontLeft;
 	private static swerveModule backLeft;
@@ -141,12 +49,12 @@ public class Drive extends SubsystemBase {
 	public static final double MAX_SPEED = 0.75; // Max speed is 0 to 1
 	public static final double MAX_REVERSIBLE_SPEED_DIFFERENCE = 0.7 * MAX_SPEED;
 
-	public static final double DEADZONE = 0.06;
-
 	public static final double OMEGA_SCALE = 1.0 / 30.0;
 
-	private final boolean invertDrive = false;
+	private final boolean invertDrive = true;//false;
 	private final boolean invertSteer = true;
+	private NavXGyro _gyro;
+	private boolean _driveCorrect;
 
   private ShuffleboardTab driveTab = Shuffleboard.getTab("DriveTab");
 
@@ -165,10 +73,16 @@ public class Drive extends SubsystemBase {
 	private NetworkTableEntry rbSetAngle = driveTab.addPersistent("RBack Set Angle", 0)
 			.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -180, "max", 180, "center", 0))
 			.withPosition(4, 2).withSize(3, 1).getEntry();
+
+	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics,
+		new Rotation2d(0));
+	  
 	
 	//swerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer)
 
-	private Drive() {
+	private Drive(NavXGyro gyro) {
+
+		this._gyro = gyro;
 
 		frontLeft = new swerveModule(Constants.FL_Steer_Id, Constants.FL_Drive_Id, invertDrive, invertSteer);
 
@@ -187,9 +101,17 @@ public class Drive extends SubsystemBase {
   //   }
   //   return instance;
   // }
-	public static Drive getInstance() {
+  public Pose2d getPose() {
+	return odometer.getPoseMeters();
+}
+
+public void resetOdometry(Pose2d pose) {
+	odometer.resetPosition(pose, this._gyro.getRotation2d());
+}
+
+public static Drive getInstance(NavXGyro gyro) {
 		if (instance == null) {
-			instance = new Drive();
+			instance = new Drive(gyro);
 		}
 
 		return instance;
@@ -227,9 +149,11 @@ public class Drive extends SubsystemBase {
 		backRight.setDriveSpeed(speed);
 	}
 
-  public void processInput(double forward, double strafe, double omega, boolean deadStick) {
+  public void processInput(double forward, double strafe, double omega, boolean deadStick, boolean driveCorrect) {
+
+	this._driveCorrect = driveCorrect;
     double omegaL2 = omega * (WHEEL_BASE_LENGTH / 2.0);
-    SmartDashboard.putNumber("OmegaL2", omegaL2);
+    //SmartDashboard.putNumber("OmegaL2", omegaL2);
     double omegaW2 = omega * (WHEEL_BASE_WIDTH / 2.0);
     SmartDashboard.putNumber("OmegaW2", omegaW2);
 
@@ -243,10 +167,14 @@ public class Drive extends SubsystemBase {
     double D = forward + omegaW2;
 
     // Compute the drive motor speeds
-    double speedFL = speed(B, D);
-    double speedBL = speed(A, D);
-    double speedFR = speed(B, C);
-    double speedBR = speed(A, C);
+    // double speedFL = speed(B, D);
+    // double speedBL = speed(A, D);
+    // double speedFR = speed(B, C);
+    // double speedBR = speed(A, C);
+	double speedFL = speed(B, C);
+    double speedBL = speed(A, C);
+    double speedFR = speed(B, D);
+    double speedBR = speed(A, D);
 
     /*
 		 * ... and angles for the steering motors Set the drive to face straight ahead
@@ -284,15 +212,14 @@ public class Drive extends SubsystemBase {
     // They are at 90 degrees to the front of the robot.
     // Subtract and add 90 degrees to steering calculation to offset for initial
     // position/calibration of drives.
-		double angleFL = angle(B, D) + Constants.FL_STEER_OFFSET + lfOffset;
-		double angleBL = angle(A, D) + Constants.BL_STEER_OFFSET + lbOffset;
-		double angleFR = angle(B, C) + Constants.FR_STEER_OFFSET + rfOffset;
-		double angleBR = angle(A, C) + Constants.BR_STEER_OFFSET + rbOffset;
-
-    // double angleFL = angle(B, D);// - 90;
-    // double angleBL = angle(A, D);// + 90;
-    // double angleFR = angle(B, C) + 20;// - 90;
-    // double angleBR = angle(A, C);// + 90;
+		double angleFL = angle(B, C)+ lfOffset;// + Constants.FL_STEER_OFFSET;//+ lfOffset;
+		double angleBL = angle(A, C)+ lbOffset;// + Constants.BL_STEER_OFFSET;// + lbOffset;
+		double angleFR = angle(B, D)+ rfOffset;// + Constants.FR_STEER_OFFSET;// + rfOffset;
+		double angleBR = angle(A, D)+ rbOffset;// + Constants.BR_STEER_OFFSET;// + rbOffset;
+		// double angleFL = angle(B, D) + Constants.FL_STEER_OFFSET + lfOffset;
+		// double angleBL = angle(A, D) + Constants.BL_STEER_OFFSET + lbOffset;
+		// double angleFR = angle(B, C) + Constants.FR_STEER_OFFSET + rfOffset;
+		// double angleBR = angle(A, C) + Constants.BR_STEER_OFFSET + rbOffset;
 
     // Compute the maximum speed so that we can scale all the speeds to the range
     // [0.0, 1.0]
@@ -300,8 +227,18 @@ public class Drive extends SubsystemBase {
 
     // Set each swerve module, scaling the drive speeds by the maximum speed
     
-    // SmartDashboard.putNumber("angleLF", angleFL);
-    // SmartDashboard.putNumber("speedLF", speedFL);
+	SmartDashboard.putNumber("angleLF", angleFL);
+    SmartDashboard.putNumber("speedLF", speedFL);
+    SmartDashboard.putNumber("CurAngle FL", frontLeft.getSteerEncDeg());
+    // SmartDashboard.putNumber("angleRF", angleFR);
+    // SmartDashboard.putNumber("speedRF", speedFR);
+	// SmartDashboard.putNumber("CurAngle FR", frontRight.getSteerEncDeg());
+    // SmartDashboard.putNumber("angleLR", angleBL);
+    // SmartDashboard.putNumber("speedLR", speedBL);
+	// SmartDashboard.putNumber("CurAngle BL", backLeft.getSteerEncDeg());
+    // SmartDashboard.putNumber("angleRR", angleBR);
+    // SmartDashboard.putNumber("speedRR", speedBR);
+	// SmartDashboard.putNumber("CurAngle BR", backRight.getSteerEncDeg());
     // SmartDashboard.putNumber("SpeedLF/MaxSpeed", speedFL / maxSpeed);
     if (deadStick) {
 
@@ -317,15 +254,16 @@ public class Drive extends SubsystemBase {
 		} else {
 
 			// Set each swerve module, scaling the drive speeds by the maximum speed
-			frontLeft.setSwerve(angleFL, speedFL / maxSpeed);
-			backLeft.setSwerve(angleBL, speedBL / maxSpeed);
-			frontRight.setSwerve(angleFR, speedFR / maxSpeed);
-			backRight.setSwerve(angleBR, speedBR / maxSpeed);
+			frontLeft.setSwerve(angleFL, speedFL / maxSpeed, this._driveCorrect);
+			backLeft.setSwerve(angleBL, speedBL / maxSpeed, this._driveCorrect);
+			frontRight.setSwerve(angleFR, speedFR / maxSpeed, this._driveCorrect);
+			backRight.setSwerve(angleBR, speedBR / maxSpeed, this._driveCorrect);
 		}
     // this.FL_Drive.setAngleAndSpeed(angleLF, speedLF / maxSpeed);
     // this.BL_Drive.setAngleAndSpeed(angleLR, speedLR / maxSpeed);
     // this.FR_Drive.setAngleAndSpeed(angleRF, speedRF / maxSpeed);
     // this.BR_Drive.setAngleAndSpeed(angleRR, speedRR / maxSpeed);
+	//getSteerEncoderVal();
   }
 
   private double speed(double val1, double val2) {
@@ -336,11 +274,87 @@ public class Drive extends SubsystemBase {
     return Math.toDegrees(Math.atan2(val1, val2));
   }
 
+  public double[] getDriveEncoders() {
+		double[] values = new double[] {
+			frontLeft.getDriveEncoder(),
+			backLeft.getDriveEncoder(),
+			frontRight.getDriveEncoder(),
+			backRight.getDriveEncoder()
+		};
+
+		return values;
+	}
+	
+	public double getDriveEncoderAvg() {
+		// double driveFL = frontLeft.getDriveEncoder();
+		// double driveBL = backLeft.getDriveEncoder();
+		// double driveFR = frontRight.getDriveEncoder();
+		// double driveBR = backRight.getDriveEncoder();
+		double driveFL = Math.abs(frontLeft.getDriveEncoder());
+		double driveBL = Math.abs(backLeft.getDriveEncoder());
+		double driveFR = Math.abs(frontRight.getDriveEncoder());
+		double driveBR = Math.abs(backRight.getDriveEncoder());
+		return (driveFL + driveFR + driveBL + driveBR) / 4.0;
+	}
+
+	public void setDriveEncodersPosition(double position) {
+		frontLeft.setDriveEncoder(position);
+		backLeft.setDriveEncoder(position);
+		frontRight.setDriveEncoder(position);
+		backRight.setDriveEncoder(position);
+	}
+
+	public void getSteerEncoderVal(){
+		SmartDashboard.putNumber("angleLF", frontLeft.getSteerEncoder());
+		SmartDashboard.putNumber("angleLB", backLeft.getSteerEncoder());
+		SmartDashboard.putNumber("angleRF", frontRight.getSteerEncoder());
+		SmartDashboard.putNumber("angleRB", backRight.getSteerEncoder());
+	}
+
+	// public static double[] getEncoderVal() {
+	// 	double[] values = new double[] { frontLeft.getAnalogIn(), backLeft.getAnalogIn(), frontRight.getAnalogIn(),
+	// 			backRight.getAnalogIn() };
+
+	// 	return values;
+	//}
+
   @Override()
   public void periodic() {
+
+	odometer.update(this._gyro.getRotation2d(), frontLeft.getState(), frontRight.getState(), backLeft.getState(),
+	backRight.getState());
+	SmartDashboard.putNumber("Robot Heading", this._gyro.getHeading());
+	SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+		//******** */
+	// Uncomment following line to physically reset encoders position to zero state.
+	// getSteerEncoderVal();
+
+	//SmartDashboard.putNumber("Angle Back Left", backLeft.getSteerEncoder());
     // this.FL_Drive.outputToDashboard();
     // this.FR_Drive.outputToDashboard();
     // this.BR_Drive.outputToDashboard();
     // this.BL_Drive.outputToDashboard();
   }
+
+  public void stopModules() {
+	frontLeft.stop();
+	frontRight.stop();
+	backLeft.stop();
+	backRight.stop();
+}
+
+public void disableRamping(){
+	frontLeft.driveMotorRamp(false);
+	frontRight.driveMotorRamp(false);
+	backLeft.driveMotorRamp(false);
+	backRight.driveMotorRamp(false);
+}
+
+public void setModuleStates(SwerveModuleState[] desiredStates) {
+	SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond/2);
+	frontLeft.setDesiredState(desiredStates[0]);
+	frontRight.setDesiredState(desiredStates[1]);
+	backLeft.setDesiredState(desiredStates[2]);
+	backRight.setDesiredState(desiredStates[3]);
+}
 }

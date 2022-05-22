@@ -9,6 +9,8 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,8 +20,9 @@ public class Indexer extends SubsystemBase {
   private static Indexer instance;
 
   private TalonSRX _indexMotor;
+  private DigitalInput _ballTrip;
 
-  private static final double MAX_INDEXER_SPEED = .5;
+  private static final double MAX_INDEXER_SPEED = 1;
 
   /** Creates a new Indexer. */
   private Indexer() {
@@ -27,6 +30,7 @@ public class Indexer extends SubsystemBase {
 
     _indexMotor = new TalonSRX(Constants.INDEXER_ID);
     _indexMotor.configFactoryDefault();
+    _ballTrip = new DigitalInput(0);
   }
   
   // Public Methods
@@ -46,6 +50,10 @@ public class Indexer extends SubsystemBase {
     _indexMotor.set(ControlMode.PercentOutput, speed);
   }
 
+  public void autoControl(double speed) {
+    _indexMotor.set(ControlMode.PercentOutput, speed);
+  }
+
   public void forward() {
     this.manualControl(MAX_INDEXER_SPEED);
   }
@@ -56,5 +64,14 @@ public class Indexer extends SubsystemBase {
 
   public void stop() {
     this.manualControl(0);
+  }
+
+  public boolean getBallTrip() {
+    return this._ballTrip.get();
+  }
+  
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("Ball Trip", _ballTrip.get());
   }
 }

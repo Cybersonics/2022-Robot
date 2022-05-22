@@ -20,7 +20,7 @@ public class DriveCommand extends CommandBase {
   private NavXGyro _navXGyro;
 
   public static final double OMEGA_SCALE = 1.0 / 45.0;//30
-	public static final double DEADZONE_LSTICK = 0.06;
+	public static final double DEADZONE_LSTICK = 0.07;
 	private static final double DEADZONE_RSTICK = 0.07;
 	private double originHeading = 0.0;
 	private double originCorr;
@@ -61,18 +61,18 @@ public class DriveCommand extends CommandBase {
 		//originCorr = _navXGyro.getNavAngle() + originOffset;
 
     // double stickForward = this.driveController.getLeftY();
-    double stickForward = this.leftStick.getY();
+    double stickForward = -this.leftStick.getY();
     SmartDashboard.putNumber("Controller Forward", stickForward);
     // double stickStrafe = this.driveController.getLeftX();
-    double stickStrafe = this.leftStick.getX();
-    SmartDashboard.putNumber("Controller Strafe", stickStrafe);
+    double stickStrafe = -this.leftStick.getX();
+    //SmartDashboard.putNumber("Controller Strafe", stickStrafe);
     // double stickOmega = (this.driveController.getRightX());
-    double stickOmega = this.rightStick.getX();
-    SmartDashboard.putNumber("Controller Omega", stickOmega);
+    double stickOmega = -this.rightStick.getX();
+    //SmartDashboard.putNumber("Controller Omega", stickOmega);
 
-		double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(-stickStrafe);
+		double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(stickStrafe);
 		double forward = Math.pow(Math.abs(stickForward), leftPow) * Math.signum(stickForward);
-    double omega = Math.pow(Math.abs(stickOmega), rightPow) * Math.signum(-stickOmega) * OMEGA_SCALE;
+    double omega = Math.pow(Math.abs(stickOmega), rightPow) * Math.signum(stickOmega) * OMEGA_SCALE;
     
     if (Math.abs(strafe) < DEADZONE_LSTICK)
       strafe = 0.0;
@@ -81,6 +81,7 @@ public class DriveCommand extends CommandBase {
     if (Math.abs(omega) < DEADZONE_RSTICK * OMEGA_SCALE)
       omega = 0.0;
     boolean stickFieldCentric = leftStick.getTrigger();
+    boolean driveCorrect = rightStick.getTrigger();
 
     if (!stickFieldCentric) {
         // When the Left Joystick trigger is not pressed, The robot is in Field Centric
@@ -94,8 +95,11 @@ public class DriveCommand extends CommandBase {
         // final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
       final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavAngle());
       //final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavHeading());
-      final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
-      strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
+      // final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
+      // strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
+      // forward = temp;
+      final double temp = forward * Math.cos(originCorrection) + strafe * Math.sin(originCorrection);
+      strafe = strafe * Math.cos(originCorrection) - forward * Math.sin(originCorrection);
       forward = temp;
     }
   
@@ -106,12 +110,12 @@ public class DriveCommand extends CommandBase {
       deadStick = true;
     }
   
-      SmartDashboard.putNumber("Forward Done", forward);
-      SmartDashboard.putNumber("Strafe Done", strafe);
-      SmartDashboard.putNumber("Rotation Done", omega);
+      // SmartDashboard.putNumber("Forward Done", forward);
+      // SmartDashboard.putNumber("Strafe Done", strafe);
+      // SmartDashboard.putNumber("Rotation Done", omega);
 
 
-    this._drive.processInput(forward, strafe, omega, deadStick);
+    this._drive.processInput(forward, strafe, omega, deadStick, driveCorrect);
 
     // this._drive.processInput(
     // () -> 0.0,

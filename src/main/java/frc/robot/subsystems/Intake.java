@@ -9,9 +9,13 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+// import edu.wpi.first.wpilibj.DoubleSolenoid;
+// import edu.wpi.first.wpilibj.PneumaticsModuleType;
+// import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+// import edu.wpi.first.wpilibj.Compressor;
 
 public class Intake extends SubsystemBase {
 
@@ -20,6 +24,7 @@ public class Intake extends SubsystemBase {
   private TalonSRX _intakeMotor;
 
   private static final double MAX_INDEXER_SPEED = .5;
+
 
   /** Creates a new Intake. */
   private Intake() {
@@ -46,6 +51,19 @@ public class Intake extends SubsystemBase {
     _intakeMotor.set(ControlMode.PercentOutput, speed);
   }
 
+  // public void openIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid _intakeRight)
+  // {
+  //   _intakeLeft.set(Value.kForward);
+  //   _intakeRight.set(Value.kForward);
+  // }
+
+  // public void closeIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid _intakeRight)
+  // {
+  //   _intakeLeft.set(Value.kReverse);
+  //   _intakeRight.set(Value.kReverse);
+  // }
+
+  
   public void forward() {
     this.manualControl(MAX_INDEXER_SPEED);
   }

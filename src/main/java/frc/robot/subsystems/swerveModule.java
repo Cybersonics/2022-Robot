@@ -26,7 +26,13 @@ import edu.wpi.first.wpilibj.RobotController;
 //import edu.wpi.first.math.controller.PIDController; //Use for Roborio PID
 //import edu.wpi.first.math.MathUtil; // Use for RoboRio PID
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.utility.DriveLocation;
+import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 //import frc.robot.subsystems.setSwerveModule;
 
@@ -38,7 +44,7 @@ public class swerveModule extends SubsystemBase {
   public double currentPosition;
   private TalonSRX steerMotor;
   private CANSparkMax driveMotor;
-  private static final double RAMP_RATE = 1.5;
+  private static final double RAMP_RATE = 0.5;//1.5;
 
   //Use the following two line if using PID in RoboRIO
   //private static final double STEER_P = .0035, STEER_I = 0.00003, STEER_D = 0.0000;
@@ -60,6 +66,8 @@ public class swerveModule extends SubsystemBase {
 
   public double encoderCountPerRotation = 1024;
 
+  private boolean _driveCorrect;
+
   public swerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer) {
 
     //Create and configure a new Drive motor
@@ -67,7 +75,9 @@ public class swerveModule extends SubsystemBase {
 		driveMotor.restoreFactoryDefaults();
 		driveMotor.setInverted(invertDrive);
 		driveMotor.setOpenLoopRampRate(RAMP_RATE);
-		driveMotor.setIdleMode(IdleMode.kCoast);
+		driveMotor.setIdleMode(IdleMode.kCoast); //changed to break at comp
+    driveMotor.setSmartCurrentLimit(55);
+ 
 
     //Create and configure an analog input on a roborio port
     //analogIn = new AnalogInput(analogNum);
@@ -80,7 +90,7 @@ public class swerveModule extends SubsystemBase {
     steerMotor.config_kI(0, STEER_I, 0);
     steerMotor.config_kD(0, STEER_D, 0);
     steerMotor.config_IntegralZone(0, 100, 0);
-    steerMotor.configAllowableClosedloopError(0, 5, 0);
+    steerMotor.configAllowableClosedloopError(0, 2, 0);
     steerMotor.setNeutralMode(NeutralMode.Brake);
     steerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, STATUS_FRAME_PERIOD, 0);
     steerMotor.setInverted(invertSteer);
@@ -89,12 +99,17 @@ public class swerveModule extends SubsystemBase {
     //Create the built in motor encoders
  
     driveMotorEncoder = driveMotor.getEncoder();
-
-    driveMotorEncoder.setPosition(0);
+    driveMotorEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderRot2Meter);
+    driveMotorEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderRPM2MeterPerSec);
+    driveMotor.burnFlash();
+    resetEncoders();
+    //driveMotorEncoder.setPosition(0);
 
   }
    
-  public void setSwerve(double angle, double speed) {
+  public void setSwerve(double angle, double speed, boolean driveCorrect) {
+
+    this._driveCorrect = driveCorrect;
     
     //double currentAngle = getAnalogIn() % 360.0; // Use for RoboRio PID
     //double currentSteerPosition = getSteerMotorEncoder();
@@ -109,7 +124,7 @@ public class swerveModule extends SubsystemBase {
     //SmartDashboard.putNumber(this.driveLocation.getName()+" Current Position", currentPosition);
     double currentAngle = (currentPosition * 360.0 / this.encoderCountPerRotation) % 360.0;
     //SmartDashboard.putNumber(this.driveLocation.getName()+" Current Angle", currentAngle);
-    double targetAngle = angle; //-angle;
+    double targetAngle = -angle; //-angle;
     double deltaDegrees = targetAngle - currentAngle;
     // If we need to turn more than 180 degrees, it's faster to turn in the opposite
     // direction
@@ -121,9 +136,11 @@ public class swerveModule extends SubsystemBase {
     // instead and
     // only rotate by the complement
     //if (Math.abs(speed) <= MAX_SPEED){
-      if (Math.abs(deltaDegrees) > 90.0) {
-      	deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
-      	speed = -speed;
+      if (!this._driveCorrect){
+        if (Math.abs(deltaDegrees) > 90.0) {
+          deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
+          speed = -speed;
+        }
       }
 	  //}
     //Add change in position to current position
@@ -166,6 +183,10 @@ public class swerveModule extends SubsystemBase {
     driveMotorEncoder.setPosition(position);
   }
   
+  public double getDriveVelocity() {
+    return driveMotorEncoder.getVelocity();
+  }
+
   //Set the drive motor speed from -1 to 1 
   public void setDriveSpeed(double speed) {
     driveMotor.set(speed);
@@ -175,12 +196,61 @@ public class swerveModule extends SubsystemBase {
   public double getDriveSpeed() {
     return driveMotor.get();
   }
-  
+
   public void stopDriveMotor() {
     driveMotor.stopMotor();
   }
-  
 
+  public double getSteerEncoder(){
+    double curPosition = steerMotor.getSelectedSensorPosition(0);
+    return curPosition;
+  }
+  
+  public double getSteerEncDeg(){
+    return (steerMotor.getSelectedSensorPosition() * 360.0 / this.encoderCountPerRotation) % 360.0;
+  }
+  
+  public double getTurningPosition() {
+    double steerEncoderRaw = getSteerEncoder();
+    double turningEncoder = (steerEncoderRaw / this.encoderCountPerRotation) * 2 * Math.PI;
+    return -turningEncoder;
+  }
+
+  public void resetEncoders() {
+    driveMotorEncoder.setPosition(0);
+  }
+
+  public SwerveModuleState getState() {
+    return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+  }
+  public void setDesiredState(SwerveModuleState state) {
+    if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+        stop();
+        return;
+    }
+    state = SwerveModuleState.optimize(state, getState().angle);
+    double driveMotorSpeed = state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond;
+    double steerMotorAngle = state.angle.getDegrees();
+    setSwerve(steerMotorAngle, driveMotorSpeed, false);
+
+  // driveMotor.set(state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
+  // turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+  //SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+  } 
+
+  public void stop() {
+    driveMotor.set(0);
+    //steerMotor.set(0);
+  }
+
+  public void driveMotorRamp(boolean enableRamp){
+    if (enableRamp) {
+      driveMotor.setOpenLoopRampRate(RAMP_RATE);
+    }
+    else {
+      driveMotor.setOpenLoopRampRate(0);
+    }
+  }
 
   @Override
   public void periodic() {
