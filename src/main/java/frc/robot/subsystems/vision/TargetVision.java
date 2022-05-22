@@ -18,6 +18,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TargetVision extends SubsystemBase {
+    private static TargetVision instance;
     private PhotonCamera camera;
     public static TargetVision instance;
     private double yawVal=0;
@@ -32,8 +33,8 @@ public class TargetVision extends SubsystemBase {
     final double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
     // Angle between horizontal and the camera.
     final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(29.7);//29.5
-    public TargetVision() {
-        
+    
+  public TargetVision() {
         this.camera = new PhotonCamera(Constants.targetCamera);
         this.camera.setPipelineIndex(Constants.Tape01);
     }
@@ -45,9 +46,14 @@ public class TargetVision extends SubsystemBase {
         return instance;
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
+    public static TargetVision getInstance() {
+        if(instance == null) {
+            instance = new TargetVision();
+        }
+        return instance;
+    }
+
+    public double getOffset() {
         var result = this.camera.getLatestResult();
         if (result.hasTargets()) {
             this.yawVal = result.getBestTarget().getYaw();
@@ -76,9 +82,8 @@ public class TargetVision extends SubsystemBase {
         }
     }
 
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
+    public void lightsOff() {
+        this.camera.setLED(VisionLEDMode.kOff);
     }
 
 

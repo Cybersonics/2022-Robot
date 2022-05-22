@@ -48,7 +48,6 @@ public class RobotContainer {
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   public static Turret _turret = Turret.getInstance();
   public static TargetVision _targetVision = TargetVision.getInstance();
-  //ublic static BallVision _ballVision = BallVision.getInstance();
 
   // Controllers
   public XboxController opController;

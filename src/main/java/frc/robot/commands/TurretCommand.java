@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 public class TurretCommand extends CommandBase {
 
   private Turret _turret;
+  private TargetVision _targetVision;
   private XboxController _controller;
   private TargetVision _targetVision;
   private double _targetYaw;
@@ -24,6 +25,7 @@ public class TurretCommand extends CommandBase {
   /** Creates a new TurretCommand. */
   public TurretCommand(Turret turret, TargetVision targetVision, XboxController controller) {
     this._turret = turret;
+    this._targetVision = targetVision;
     this._controller = controller;
     this._targetVision = targetVision;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,7 +41,6 @@ public class TurretCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     if (this._targetVision.hasTargets()) {
       this._hasTarget = true;
       this._targetYaw = this._targetVision.getYawVal();
@@ -59,7 +60,6 @@ public class TurretCommand extends CommandBase {
         this._turret.stopTurretRotation();
       }
     }
-
   }
 
   // Called once the command ends or is interrupted.
