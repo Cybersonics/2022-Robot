@@ -15,7 +15,6 @@ public class TurretCommand extends CommandBase {
   private Turret _turret;
   private TargetVision _targetVision;
   private XboxController _controller;
-  private TargetVision _targetVision;
   private double _targetYaw;
   private boolean _hasTarget;
   private double _targetDistance;
