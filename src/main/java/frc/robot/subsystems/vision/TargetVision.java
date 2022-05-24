@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TargetVision extends SubsystemBase {
     private static TargetVision instance;
     private PhotonCamera camera;
-    public static TargetVision instance;
     private double yawVal=0;
     private double pitchVal=0;
     private double skewVal=0;
@@ -40,20 +39,17 @@ public class TargetVision extends SubsystemBase {
     }
 
     public static TargetVision getInstance() {
-        if (instance == null) {
-          instance = new TargetVision();
-        }
-        return instance;
-    }
-
-    public static TargetVision getInstance() {
         if(instance == null) {
             instance = new TargetVision();
         }
         return instance;
     }
 
-    public double getOffset() {
+    //public double getOffset() {
+        
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
         var result = this.camera.getLatestResult();
         if (result.hasTargets()) {
             this.yawVal = result.getBestTarget().getYaw();
@@ -80,6 +76,11 @@ public class TargetVision extends SubsystemBase {
             // Set driver mode to on.
             camera.setDriverMode(true);
         }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        // This method will be called once per scheduler run during simulation
     }
 
     public void lightsOff() {
