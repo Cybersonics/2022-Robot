@@ -399,6 +399,9 @@ public class AutonomousRoutines {
 
    }
 
+   /*
+        Use this as model for path planning
+   */
    public Command RightPathPlanner2Ball(){
         // 1. Create trajectory settings
        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -603,6 +606,21 @@ public class AutonomousRoutines {
         );
 
 
+   }
+
+   public class trajectorySetup {
+        // 1. Create trajectory settings
+        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                .setKinematics(Constants.FrameConstants.kDriveKinematics);
+
+        // 3. Define PID controllers for tracking trajectory
+        PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+        PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+        ProfiledPIDController thetaController = new ProfiledPIDController(
+                AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+        //this.thetaController.enableContinuousInput(-Math.PI, Math.PI);
    }
 
 }

@@ -110,10 +110,11 @@ public final class Constants {
         public static final double kPTurning = 0.5;
     }
     public static final class FrameConstants {
-        public static final double kTrackWidth = Units.inchesToMeters(22);
         // Distance between right and left wheels
-        public static final double kWheelBase = Units.inchesToMeters(24);
+        public static final double kTrackWidth = Units.inchesToMeters(22);
         // Distance between front and back wheels
+        public static final double kWheelBase = Units.inchesToMeters(24);
+
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(kWheelBase / 2, kTrackWidth / 2),
             new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
