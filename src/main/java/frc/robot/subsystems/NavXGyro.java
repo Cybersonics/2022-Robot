@@ -5,16 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 
 public class NavXGyro extends SubsystemBase { 
 
   private static NavXGyro instance;
-
   public static AHRS navX;
   public static double zeroHeading;
   public static double zeroAngle;
@@ -25,8 +22,7 @@ public class NavXGyro extends SubsystemBase {
 
     zeroHeading = getNavHeading();
     zeroAngle = getNavAngle();
-    System.out.println("Setup ZeroAngle " + zeroAngle);
-    
+    System.out.println("Setup ZeroAngle " + zeroAngle); 
   }
   
   // Public Methods
@@ -68,8 +64,14 @@ public class NavXGyro extends SubsystemBase {
     return Rotation2d.fromDegrees(navX.getAngle());
   }
 
+    /*
+      Note that the math in the getHeading method is used to invert the direction of 
+      the gyro for use by wpilib which treats gyros backwards.
+      Gyros are normally clockwise positive. Wpilib wants 
+      counter-clockwise positive.
+  */
   public double getHeading() {
-    return Math.IEEEremainder(-getNavAngle(), 360);
+     return Math.IEEEremainder(-getNavAngle(), 360);
   }
 
   public Rotation2d getRotation2d() {

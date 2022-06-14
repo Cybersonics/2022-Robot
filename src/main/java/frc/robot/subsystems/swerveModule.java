@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj.RobotController;
 //import edu.wpi.first.math.MathUtil; // Use for RoboRio PID
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.utility.DriveLocation;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,9 +72,9 @@ public class swerveModule extends SubsystemBase {
     //Create and configure a new Drive motor
     driveMotor = new CANSparkMax(driveNum, MotorType.kBrushless);
 		driveMotor.restoreFactoryDefaults();
-		driveMotor.setInverted(invertDrive);
-		driveMotor.setOpenLoopRampRate(RAMP_RATE);
-		driveMotor.setIdleMode(IdleMode.kCoast); //changed to break at comp
+		driveMotor.setInverted(invertDrive);// setInverted reverses the both the motor and the encoder direction.
+		driveMotor.setOpenLoopRampRate(RAMP_RATE);// This provides a motor ramp up time to prevent brown outs.
+		driveMotor.setIdleMode(IdleMode.kCoast);
     driveMotor.setSmartCurrentLimit(55);
  
 
@@ -93,15 +92,15 @@ public class swerveModule extends SubsystemBase {
     steerMotor.configAllowableClosedloopError(0, 2, 0);
     steerMotor.setNeutralMode(NeutralMode.Brake);
     steerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, STATUS_FRAME_PERIOD, 0);
-    steerMotor.setInverted(invertSteer);
-    steerMotor.setSensorPhase(true);
+    steerMotor.setInverted(invertSteer); // setInverted reverses the both the motor and the encoder direction.
+    steerMotor.setSensorPhase(true); // setSensorPhase is used to reverse just the encoder direction and not the motor direction.
 
     //Create the built in motor encoders
  
     driveMotorEncoder = driveMotor.getEncoder();
     driveMotorEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderRot2Meter);
     driveMotorEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderRPM2MeterPerSec);
-    driveMotor.burnFlash();
+    driveMotor.burnFlash();// Set configuration values to flash memory in Spark Max to prevent errors.
     resetEncoders();
     //driveMotorEncoder.setPosition(0);
 
@@ -118,23 +117,25 @@ public class swerveModule extends SubsystemBase {
     //double targetAngle = angle; //-angle;
     //double deltaDegrees = targetAngle - currentAngle;
 
-    //SmartDashboard.putNumber(this.driveLocation.getName()+" Angle", angle);
-    //SmartDashboard.putNumber(this.driveLocation.getName()+" Speed", speed);
     double currentPosition = steerMotor.getSelectedSensorPosition(0);
-    //SmartDashboard.putNumber(this.driveLocation.getName()+" Current Position", currentPosition);
     double currentAngle = (currentPosition * 360.0 / this.encoderCountPerRotation) % 360.0;
-    //SmartDashboard.putNumber(this.driveLocation.getName()+" Current Angle", currentAngle);
     double targetAngle = -angle; //-angle;
     double deltaDegrees = targetAngle - currentAngle;
-    // If we need to turn more than 180 degrees, it's faster to turn in the opposite
-    // direction
+
+    /* 
+        The gyro reads in degrees from 0 to 360 where the 0/360 degree position is straight ahead.
+        The swerve equations generate position angles from -180 to 180 degrees where the 
+        center point of zero degrees is straight ahead.
+        To relate the two coordinate systems we "shift" the gyro reading to make it "read" -180 to 180
+    */
     if (Math.abs(deltaDegrees) > 180.0) {
       deltaDegrees -= 360.0 * Math.signum(deltaDegrees);
     }
 
-    // If we need to turn more than 90 degrees, we can reverse the wheel direction
-    // instead and
-    // only rotate by the complement
+    /* 
+        If we need to turn more than 90 degrees, we can reverse the wheel direction
+        instead and only rotate by the complement
+    */
     //if (Math.abs(speed) <= MAX_SPEED){
       if (!this._driveCorrect){
         if (Math.abs(deltaDegrees) > 90.0) {
@@ -143,23 +144,24 @@ public class swerveModule extends SubsystemBase {
         }
       }
 	  //}
+
     //Add change in position to current position
-    //double targetPosition = currentAngle + deltaDegrees; 
-    double targetPosition = currentPosition + ((deltaDegrees/360) * encoderCountPerRotation);
+    //double targetPosition = currentAngle + deltaDegrees;
     //Scale the new position to match the motor encoder
     //double scaledPosition = (targetPosition / (360/STEER_MOTOR_RATIO)); 
-
     //steerPID.setSetpoint(targetPosition); // Use for RoboRio PID
     //double steerOutput = steerPID.calculate(currentAngle); // Use for RoboRio PID
     //steerOutput = MathUtil.clamp(steerOutput, -1, 1); // Use for RoboRio PID
 
+    /*
+        Scale the new position to match the motor encoder and add change in position to current position.
+    */
+    double targetPosition = currentPosition + ((deltaDegrees/360) * encoderCountPerRotation);
 
     driveMotor.set(speed);
     steerMotor.set(ControlMode.Position, targetPosition);
-   
 
-
-    //Use Dashboard items to help debug
+    // Use Dashboard items to help debug
     // SmartDashboard.putNumber("Incoming Angle", angle);
     // SmartDashboard.putNumber("CurAngle", currentAngle);
     // SmartDashboard.putNumber("TargetAngle", targetAngle);
@@ -172,13 +174,17 @@ public class swerveModule extends SubsystemBase {
   }
 
   
-  //Get the built in Spark/Neo Drive motor encoder position. Value is in motor revolutions.
+  /*
+      Get the built in Spark/Neo Drive motor encoder position. Value is in motor revolutions.
+  */
   public double getDriveEncoder() {
     return driveMotorEncoder.getPosition();
   }
   
-  //Set the position value of the Spark/Neo Drive motor encoder position. Position is in 
-  //motor revolutions.
+  /*
+      Set the position value of the Spark/Neo Drive motor encoder position. Position is in 
+      motor revolutions.
+  */
   public void setDriveEncoder(double position) {
     driveMotorEncoder.setPosition(position);
   }
@@ -187,12 +193,16 @@ public class swerveModule extends SubsystemBase {
     return driveMotorEncoder.getVelocity();
   }
 
-  //Set the drive motor speed from -1 to 1 
+  /*
+      Set the drive motor speed from -1 to 1
+  */
   public void setDriveSpeed(double speed) {
     driveMotor.set(speed);
   }
   
-  //Get the drive motor speed.
+  /*
+      Get the drive motor speed.
+  */
   public double getDriveSpeed() {
     return driveMotor.get();
   }
@@ -213,7 +223,7 @@ public class swerveModule extends SubsystemBase {
   public double getTurningPosition() {
     double steerEncoderRaw = getSteerEncoder();
     double turningEncoder = (steerEncoderRaw / this.encoderCountPerRotation) * 2 * Math.PI;
-    return -turningEncoder;
+    return -turningEncoder; //Invert Encoder for odometry as wpilib treats encoders backwards.
   }
 
   public void resetEncoders() {
@@ -223,24 +233,20 @@ public class swerveModule extends SubsystemBase {
   public SwerveModuleState getState() {
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
   }
+  
   public void setDesiredState(SwerveModuleState state) {
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
         stop();
         return;
     }
     state = SwerveModuleState.optimize(state, getState().angle);
-    double driveMotorSpeed = state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond;
+    double driveMotorSpeed = state.speedMetersPerSecond / Constants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond;
     double steerMotorAngle = state.angle.getDegrees();
     setSwerve(steerMotorAngle, driveMotorSpeed, false);
-
-  // driveMotor.set(state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
-  // turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
-  //SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
   } 
 
   public void stop() {
     driveMotor.set(0);
-    //steerMotor.set(0);
   }
 
   public void driveMotorRamp(boolean enableRamp){

@@ -33,6 +33,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.FrameConstants;
 import java.util.List;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -132,6 +133,15 @@ public class AutonomousRoutines {
         return new TurretPositionCommand(this._turret, -160);
     }
 
+    public Command testRotateMove() {
+        return new SequentialCommandGroup(
+                new AutonDriveDistanceCommand(this._drive, 50, 0.4, 0.0, 0.0, false, this._ballVision, this._navxGyro)
+        // new RotateCommand(this._drive, -60, this._navxGyro),
+        // new AutonDriveDistanceCommand(this._drive, 50, -0.4, 0.0, 0.0, false,
+        // this._ballVision, this._navxGyro)
+        );
+    }
+    
     public Command getCenterRotateFireAndMove() {
         return new SequentialCommandGroup(
                 new AutoVisionCommand(this._targetVision),
@@ -154,14 +164,6 @@ public class AutonomousRoutines {
                 new AutonDriveDistanceCommand(this._drive, 10, 0.0, 0.4, 0.0, false, this._ballVision));
     }
 
-    public Command testRotateMove() {
-        return new SequentialCommandGroup(
-                new AutonDriveDistanceCommand(this._drive, 50, 0.4, 0.0, 0.0, false, this._ballVision, this._navxGyro)
-        // new RotateCommand(this._drive, -60, this._navxGyro),
-        // new AutonDriveDistanceCommand(this._drive, 50, -0.4, 0.0, 0.0, false,
-        // this._ballVision, this._navxGyro)
-        );
-    }
 
     public Command getRightRotateFireAndMove() {
         return new SequentialCommandGroup(
@@ -312,7 +314,7 @@ public class AutonomousRoutines {
        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
            AutoConstants.kMaxSpeedMetersPerSecond,
            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-               .setKinematics(Constants.kDriveKinematics);
+               .setKinematics(Constants.FrameConstants.kDriveKinematics);
 
        // 2. Generate trajectory
        Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(
@@ -347,7 +349,7 @@ public class AutonomousRoutines {
                trajectory1,
                //swerveSubsystem::getPose,
                _drive::getPose,
-               Constants.kDriveKinematics,
+               Constants.FrameConstants.kDriveKinematics,
                xController,
                yController,
                thetaController,
@@ -402,7 +404,7 @@ public class AutonomousRoutines {
        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
            AutoConstants.kMaxSpeedMetersPerSecond,
            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-               .setKinematics(Constants.kDriveKinematics);
+               .setKinematics(Constants.FrameConstants.kDriveKinematics);
 
         // 3. Define PID controllers for tracking trajectory
         PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
@@ -419,7 +421,7 @@ public class AutonomousRoutines {
         testPath,
         //swerveSubsystem::getPose,
         _drive::getPose,
-        Constants.kDriveKinematics,
+        Constants.FrameConstants.kDriveKinematics,
         xController,
         yController,
         thetaController,
@@ -454,7 +456,7 @@ public class AutonomousRoutines {
        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
            AutoConstants.kMaxSpeedMetersPerSecond,
            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-               .setKinematics(Constants.kDriveKinematics);
+               .setKinematics(Constants.FrameConstants.kDriveKinematics);
 
         // 3. Define PID controllers for tracking trajectory
         PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
@@ -472,7 +474,7 @@ public class AutonomousRoutines {
         testPath,
         //swerveSubsystem::getPose,
         _drive::getPose,
-        Constants.kDriveKinematics,
+        Constants.FrameConstants.kDriveKinematics,
         xController,
         yController,
         thetaController,
@@ -484,7 +486,7 @@ public class AutonomousRoutines {
         testPath2,
         //swerveSubsystem::getPose,
         _drive::getPose,
-        Constants.kDriveKinematics,
+        Constants.FrameConstants.kDriveKinematics,
         xController,
         yController,
         thetaController,
@@ -531,7 +533,7 @@ public class AutonomousRoutines {
        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
            AutoConstants.kMaxSpeedMetersPerSecond,
            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-               .setKinematics(Constants.kDriveKinematics);
+               .setKinematics(Constants.FrameConstants.kDriveKinematics);
 
         // 3. Define PID controllers for tracking trajectory
         PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
@@ -549,7 +551,7 @@ public class AutonomousRoutines {
         testPath,
         //swerveSubsystem::getPose,
         _drive::getPose,
-        Constants.kDriveKinematics,
+        Constants.FrameConstants.kDriveKinematics,
         xController,
         yController,
         thetaController,
@@ -561,7 +563,7 @@ public class AutonomousRoutines {
         testPath2,
         //swerveSubsystem::getPose,
         _drive::getPose,
-        Constants.kDriveKinematics,
+        Constants.FrameConstants.kDriveKinematics,
         xController,
         yController,
         thetaController,

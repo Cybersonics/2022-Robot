@@ -53,6 +53,15 @@ public class IndexerCommand extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+  /*
+      The indexing command first looks to see if the robot is in autonomous mode.
+      During autonomous the speed of the indexer is controlled by sending a speed
+      directly to the indexer.
+      If the sensor at the front of the indexer is triggered and there is no input 
+      from the operator the indexer automatically cycles the ball in until the ball
+      clears the sensor. When clear and there is no input from the operator the 
+      indexer will take a value of zero from the operator controller.
+  */
   @Override
   public void execute() {
     if (autoRoutine) {
