@@ -53,6 +53,7 @@ public class AutonomousRoutines {
   private NavXGyro _navxGyro;
   private Turret _turret;
   private Pneumatics _pneumatics;
+  private TrajectorySetup _trajectorySetup;
 
   public AutonomousRoutines(Drive drive,
                             Indexer indexer,
@@ -74,6 +75,11 @@ public class AutonomousRoutines {
       this._pneumatics = pneumatics;
       this._intake = intake;
 
+    /*
+      Create the trajectory setup and Control PIDs required
+    */
+      this._trajectorySetup = new TrajectorySetup();
+
   }
 
   public AutonomousRoutines(Drive drive,
@@ -93,6 +99,11 @@ public class AutonomousRoutines {
     this._navxGyro = navXGyro;
     this._pneumatics = pneumatics;
     this._intake = intake;
+
+    /*
+      Create the trajectory setup and Control PIDs required
+    */
+    this._trajectorySetup = new TrajectorySetup();
 
   }
 
@@ -324,7 +335,6 @@ public class AutonomousRoutines {
     // 4. Construct command to follow trajectory
     SwerveControllerCommand swerveControllerCommand1 = new SwerveControllerCommand(
       trajectory1,
-      //swerveSubsystem::getPose,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
       xController,
@@ -384,28 +394,17 @@ public class AutonomousRoutines {
       AutoConstants.kMaxSpeedMetersPerSecond,
       AutoConstants.kMaxAccelerationMetersPerSecondSquared)
       .setKinematics(Constants.FrameConstants.kDriveKinematics);
-
-    // 3. Define PID controllers for tracking trajectory
-    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-      AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
-    );
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
     
-    SwerveModuleState[] desiredStates;
-
     // 2. Generate trajectory
     PathPlannerTrajectory testPath = PathPlanner.loadPath("Test Path", 4, 3);
 
     PPSwerveControllerCommand command = new PPSwerveControllerCommand(
       testPath,
-      //swerveSubsystem::getPose,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
+      _trajectorySetup.xController,
+      _trajectorySetup.yController,
+      _trajectorySetup.thetaController,
       _drive::setModuleStates,
       _drive
     );
@@ -441,15 +440,6 @@ public class AutonomousRoutines {
       AutoConstants.kMaxAccelerationMetersPerSecondSquared)
       .setKinematics(Constants.FrameConstants.kDriveKinematics);
 
-    // 3. Define PID controllers for tracking trajectory
-    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-      AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
-    );
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-      
-
     // 2. Generate trajectory
     PathPlannerTrajectory testPath = PathPlanner.loadPath("Test Path", 4, 3);
     PathPlannerTrajectory testPath2 = PathPlanner.loadPath("Test Path 02", 4, 3);
@@ -459,9 +449,9 @@ public class AutonomousRoutines {
       //swerveSubsystem::getPose,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
+      _trajectorySetup.xController,
+      _trajectorySetup.yController,
+      _trajectorySetup.thetaController,
       _drive::setModuleStates,
       _drive
     );
@@ -469,12 +459,11 @@ public class AutonomousRoutines {
 
     PPSwerveControllerCommand command2 = new PPSwerveControllerCommand(
       testPath2,
-      //swerveSubsystem::getPose,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
+      _trajectorySetup.xController,
+      _trajectorySetup.yController,
+      _trajectorySetup.thetaController,
       _drive::setModuleStates,
       _drive
     );
@@ -518,16 +507,7 @@ public class AutonomousRoutines {
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMetersPerSecond,
       AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-      .setKinematics(Constants.FrameConstants.kDriveKinematics);
-
-    // 3. Define PID controllers for tracking trajectory
-    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-      AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
-    );
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-      
+      .setKinematics(Constants.FrameConstants.kDriveKinematics);    
 
     // 2. Generate trajectory
     PathPlannerTrajectory testPath = PathPlanner.loadPath("Slim Monkey", 4, 3);
@@ -538,11 +518,11 @@ public class AutonomousRoutines {
       //swerveSubsystem::getPose,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
+      _trajectorySetup.xController,
+      _trajectorySetup.yController,
+      _trajectorySetup.thetaController,
       _drive::setModuleStates,
-      (SubSystem) _drive
+      _drive
     );
 
     PPSwerveControllerCommand command2 = new PPSwerveControllerCommand(
@@ -550,9 +530,9 @@ public class AutonomousRoutines {
       //swerveSubsystem::getPose,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
+      _trajectorySetup.xController,
+      _trajectorySetup.yController,
+      _trajectorySetup.thetaController,
       _drive::setModuleStates,
       _drive
     );
@@ -594,11 +574,6 @@ public class AutonomousRoutines {
   public Command testMonkey2BallAuto(){
 
     /*
-            Create the trajectory setup and Control PIDs required
-    */
-    TrajectorySetup trajectorySetup = new TrajectorySetup();
-
-    /*
             Generate the trajectory from the path created in PathPlanner
     */
     PathPlannerTrajectory testPath = PathPlanner.loadPath("Test Path", 4, 3);
@@ -607,9 +582,9 @@ public class AutonomousRoutines {
       testPath,
       _drive::getPose,
       Constants.FrameConstants.kDriveKinematics,
-      trajectorySetup.xController,
-      trajectorySetup.yController,
-      trajectorySetup.thetaController,
+      _trajectorySetup.xController,
+      _trajectorySetup.yController,
+      _trajectorySetup.thetaController,
       _drive::setModuleStates,
       _drive
     );
@@ -640,7 +615,8 @@ public class AutonomousRoutines {
     public TrajectoryConfig trajectoryConfig;
     public PIDController xController;
     public PIDController yController;
-    public ProfiledPIDController thetaController;
+    public PIDController thetaController;
+    // public ProfiledPIDController thetaController;
 
     public TrajectorySetup(){
       /*
@@ -656,10 +632,12 @@ public class AutonomousRoutines {
       */
       xController = new PIDController(AutoConstants.kPXController, 0, 0);
       yController = new PIDController(AutoConstants.kPYController, 0, 0);
-      thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
-      );
-      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+      thetaController = new PIDController(AutoConstants.kPThetaController, 0, 0);
+
+      // thetaController = new ProfiledPIDController(
+      //   AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
+      // );
+      // thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
   }
