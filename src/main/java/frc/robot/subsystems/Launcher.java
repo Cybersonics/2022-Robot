@@ -60,10 +60,6 @@ public class Launcher extends SubsystemBase {
   public void calculatedLaunch(double speed) {
     _rightMotor.set(speed);
     _leftMotor.set(speed);
-    
-    // double setPoint = speed * maxRPM;
-    //  _rightPIDController.setReference(setPoint, CANSparkMax.ControlType.kVelocity);
-    // _leftMotor.follow(_rightMotor);
   }
 
   public void calculateReference(double reference) {
@@ -73,7 +69,6 @@ public class Launcher extends SubsystemBase {
 
   public void start() {
     calculatedLaunch(MAX_SHOOTER_RATE);
-
   }
 
   public void stop() {

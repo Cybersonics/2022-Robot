@@ -38,8 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // Subsystems
-  //public static Drive _drive = Drive.getInstance(Constants.ROBOT_WIDTH, Constants.ROBOT_LENGTH);
-  public static NavXGyro _gyro = NavXGyro.getInstance();
+  public static NavXGyro _gyro = NavXGyro.getInstance(); // This must be called before Drive as it is used by the Drive
   public static Drive _drive = Drive.getInstance(_gyro);
   public static Climber _climber = Climber.getInstance();
   public static Indexer _indexer = Indexer.getInstance();
@@ -78,17 +77,21 @@ public class RobotContainer {
 
   public RobotContainer() {
     // Set up auton selector
+    // Create the most important auto routine first "Do Nothing"
     m_chooser.setDefaultOption("Do Nothing", _autonRoutines.DoNothing());
+
+    // Test routines are constructed to first test the auto routines for individual subsystems
     // m_chooser.addOption("testMove", _autonRoutines.testMove());
-    //m_chooser.addOption("testRotate", _autonRoutines.testRotate());
+    // m_chooser.addOption("testRotate", _autonRoutines.testRotate());
     // m_chooser.addOption("testShooter", _autonRoutines.testShooter());
     // m_chooser.addOption("testIndexer", _autonRoutines.testIndexer());
-    //m_chooser.addOption("testAutoIntakeDeploy", _autonRoutines.testAutoIntakeDeploy());
+    // m_chooser.addOption("testAutoIntakeDeploy", _autonRoutines.testAutoIntakeDeploy());
+
+    // Create combination autonomous routines to allow coordinated movement
     m_chooser.addOption("Center Shoot and Move", _autonRoutines.getCenterRotateFireAndMove());
     // m_chooser.addOption("Left Shoot and Move", _autonRoutines.getLeftRotateFireAndMove());
     // m_chooser.addOption("Right Shoot and Move", _autonRoutines.getRightRotateFireAndMove());
     m_chooser.addOption("Center 2 ball", _autonRoutines.getCenterTwoBall());
-    // m_chooser.addOption("Right 3 ball (WIP)", _autonRoutines.getRightThreeBall());
     m_chooser.addOption("testTurretRotate", _autonRoutines.testTurretRotate());
     // m_chooser.addOption("testRotateMove", _autonRoutines.testRotateMove());
     // m_chooser.addOption("Right 4 Ball", _autonRoutines.getRightFourBall());
@@ -96,12 +99,13 @@ public class RobotContainer {
     m_chooser.addOption("Right 2 Ball Auto", _autonRoutines.RightPathPlanner2Ball());
     m_chooser.addOption("Test PPlanner", _autonRoutines.testPathPlanner());
     m_chooser.addOption("slim Monkey", _autonRoutines.SlimMonkey4Ball());
-
+    m_chooser.addOption("Test Monkey", _autonRoutines.testMonkey2BallAuto());
     //m_chooser.addOption("TestLeftComp", _autonRoutines.testRunLeft()); //added at comp
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser);
 
+    // Create driver and operator joysticks 
     opController = new XboxController(Constants.OP_CONTROLLER);
     //driveController = new XboxController(Constants.DRIVE_CONTROLLER);
     leftStick = new Joystick(Constants.LEFT_STICK);
@@ -110,9 +114,7 @@ public class RobotContainer {
     CommandScheduler.getInstance()
     // .setDefaultCommand(_drive,
     // new DriveCommand(_drive, driveController, _gyro)
-    .setDefaultCommand(_drive,
-    new DriveCommand(_drive, leftStick, rightStick, _gyro)
-    );
+    .setDefaultCommand(_drive, new DriveCommand(_drive, leftStick, rightStick, _gyro));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -140,7 +142,6 @@ public class RobotContainer {
     _launcher.setDefaultCommand(new ShooterCommand(_launcher, _turret, _targetVision, opController));
 
     //Reset NavX
-    //new JoystickButton(leftJoy, 7).whenPressed(new ZeroHeadingCommand(_drive, _navXGyro));
     // new JoystickButton(driveController, 3).whenPressed(() -> _gyro.zeroNavHeading());
     new JoystickButton(leftStick, 7).whenPressed(() -> _gyro.zeroNavHeading());
 
@@ -170,8 +171,6 @@ public class RobotContainer {
     // new JoystickButton(driveController, 1).whenReleased(() -> _climber.stop());
     new JoystickButton(rightStick, 5).whenPressed(() -> _climber.retractClimber());
     new JoystickButton(rightStick, 5).whenReleased(() -> _climber.stop());
-
-
   }
 
   /**

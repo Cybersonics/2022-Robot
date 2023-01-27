@@ -109,33 +109,31 @@ public final class Constants {
         public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
         public static final double kPTurning = 0.5;
     }
+    public static final class FrameConstants {
+        // Distance between right and left wheels
+        public static final double kTrackWidth = Units.inchesToMeters(22);
+        // Distance between front and back wheels
+        public static final double kWheelBase = Units.inchesToMeters(24);
 
-    public static final double kTrackWidth = Units.inchesToMeters(22);
-    // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(24);
-    // Distance between front and back wheels
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        //     new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        //     new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        //     new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-        //     new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 6;//Orig 5
-    public static final double kPhysicalMaxAngularSpeedRadiansPerSecond =  2 * Math.PI;//2*Math.PI;//orig 2*2*Math.PI
+        public static final double kPhysicalMaxSpeedMetersPerSecond = 6;//Orig 5
+        public static final double kPhysicalMaxAngularSpeedRadiansPerSecond =  2 * Math.PI;//2*Math.PI;//orig 2*2*Math.PI
 
-    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
-    public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
-            kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
-    public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-    public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+        // public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
+        // public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
+        //         kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+        // public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
+        // public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+    }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2;
-        public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 5;//10;
+        public static final double kMaxSpeedMetersPerSecond = FrameConstants.kPhysicalMaxSpeedMetersPerSecond / 2;
+        public static final double kMaxAngularSpeedRadiansPerSecond = FrameConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 5;//10;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;//orig 3
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;// 2 //Orig 4
         public static final double kPXController = 5;//8;//Orig 1.5
@@ -146,14 +144,14 @@ public final class Constants {
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond,
                         kMaxAngularAccelerationRadiansPerSecondSquared);
-        public static final double kGoToPointLinearP = 0;
-        public static final double kGoToPointLinearF = 0.5;
-        public static final double kGoToPointAngularP = 0;
-        public static final double kGoToPointAngularF = 0;
+        // public static final double kGoToPointLinearP = 0;
+        // public static final double kGoToPointLinearF = 0.5;
+        // public static final double kGoToPointAngularP = 0;
+        // public static final double kGoToPointAngularF = 0;
 
-        public static final double maxTrajectoryOverrunSeconds = 3;
-        public static final double kMaxDistanceMetersError = 0.1;
-        public static final double kMaxAngleDegreesError = 5;
+        // public static final double maxTrajectoryOverrunSeconds = 3;
+        // public static final double kMaxDistanceMetersError = 0.1;
+        // public static final double kMaxAngleDegreesError = 5;
 
 
     }

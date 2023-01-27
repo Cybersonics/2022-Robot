@@ -27,6 +27,9 @@ public class Intake extends SubsystemBase {
 
 
   /** Creates a new Intake. */
+  //  Note that this subsystem runs the intake motors
+  //  Deployment of the intake is in the Pneumatics subsystem
+
   private Intake() {
     CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -50,19 +53,6 @@ public class Intake extends SubsystemBase {
   public void manualControl(double speed) {
     _intakeMotor.set(ControlMode.PercentOutput, speed);
   }
-
-  // public void openIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid _intakeRight)
-  // {
-  //   _intakeLeft.set(Value.kForward);
-  //   _intakeRight.set(Value.kForward);
-  // }
-
-  // public void closeIntake(DoubleSolenoid _intakeLeft, DoubleSolenoid _intakeRight)
-  // {
-  //   _intakeLeft.set(Value.kReverse);
-  //   _intakeRight.set(Value.kReverse);
-  // }
-
   
   public void forward() {
     this.manualControl(MAX_INDEXER_SPEED);

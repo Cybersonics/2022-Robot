@@ -35,7 +35,7 @@ public class Interpolation {
         // y = 0.0529x2 - 5.3439x + 2907.7
         // return 0.0529 * Math.Pow(distance,2) - 5.3439 * distance + 2907.7;
         
-        double bestFitValue = Math.round(0.0529 * Math.pow(distance,2) - 5.3439 * distance + 2907.7);
+        double bestFitValue = Math.round(0.0529 * Math.pow(distance,2) - 5.3439 * distance + 3007.7);
         double interpolationValue = Math.round(minRPM + (distance - minDist) * (dif) / (maxDist - minDist));
         SmartDashboard.putNumber("RPM Best Fit", bestFitValue);
         SmartDashboard.putNumber("RPM Interpolation", interpolationValue);
