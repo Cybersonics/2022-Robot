@@ -40,13 +40,13 @@ public class TurretCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (this._targetVision.hasTargets()) {
-      this._hasTarget = true;
-      this._targetYaw = this._targetVision.getYawVal();
-      this._targetDistance = this._targetVision.getRange();
-      double test = Units.metersToInches(this._targetDistance);
-      this._turret.rotateTurret(() -> 0, TURRET_DEADZONE, this._hasTarget, this._targetYaw);
-    } else {
+    // if (this._targetVision.hasTargets()) {
+    //   this._hasTarget = true;
+    //   this._targetYaw = this._targetVision.getYawVal();
+    //   this._targetDistance = this._targetVision.getRange();
+    //   double test = Units.metersToInches(this._targetDistance);
+    //   //this._turret.rotateTurret(() -> 0, TURRET_DEADZONE, this._hasTarget, this._targetYaw);
+    // } else {
       this._hasTarget = false;
 
       if (this._controller.getRightTriggerAxis() > 0) {
@@ -58,7 +58,7 @@ public class TurretCommand extends CommandBase {
       } else {
         this._turret.stopTurretRotation();
       }
-    }
+    // }
   }
 
   // Called once the command ends or is interrupted.

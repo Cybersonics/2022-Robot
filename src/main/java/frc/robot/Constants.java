@@ -7,11 +7,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -159,6 +154,6 @@ public final class Constants {
         // public static final double kMaxAngleDegreesError = 5;
     }
 
-   
+       
 
 }

@@ -69,12 +69,12 @@ public class TargetVision extends SubsystemBase {
         if (LED_Enable){
             cameraLEDOn();
             // Set driver mode to off.
-            camera.setDriverMode(false);
+            //camera.setDriverMode(false);
         }
         else {
             cameraLEDOff();
             // Set driver mode to on.
-            camera.setDriverMode(true);
+            //camera.setDriverMode(true);
         }
     }
 

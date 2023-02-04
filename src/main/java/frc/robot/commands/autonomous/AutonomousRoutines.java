@@ -42,6 +42,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.pathplanner.lib.*;
+import java.util.HashMap;
 
 public class AutonomousRoutines {
   private Drive _drive;
@@ -54,6 +55,7 @@ public class AutonomousRoutines {
   private Turret _turret;
   private Pneumatics _pneumatics;
   private TrajectorySetup _trajectorySetup;
+  public HashMap<String, Command> eventMap;
 
   public AutonomousRoutines(Drive drive,
                             Indexer indexer,
@@ -104,6 +106,13 @@ public class AutonomousRoutines {
       Create the trajectory setup and Control PIDs required
     */
     this._trajectorySetup = new TrajectorySetup();
+    eventMap = new HashMap<>();
+    // eventMap.put("shooterStart", new ShooterSetRPM(5000));
+    // eventMap.put("intakeDown", new IntakeDown());
+    // eventMap.put("intakeOn", new IntakeRun());
+    // eventMap.put("intakeOff", new IntakeStop());
+    // eventMap.put("turnToTarget", new DriveTurnToTarget());
+    // eventMap.put("shoot", new ShooterShoot());
 
   }
 
